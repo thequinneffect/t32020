@@ -1,0 +1,51 @@
+
+Question 1:
+What is Engineering? How is Engineering different from Science or Mathematics?
+Engineering is the application of scientific principles for the creation of physical entities to fulfil a purpose, and to understand how they will behave.
+Engineering is different as it is more practical and is the application of the sciences. Science and mathematics are more theoretical and concerned with the pursuit of knowledge itself.
+What is a profession? What is not a profession? Give examples and explain why:
+Independent autonomous body that regulates itself, upholds a unique code of ethics and behaviour, has a body of knowledge and expertise in a particular field. Public mission that pursues public good.
+A profession is not just knowledge.
+Waiter.
+
+Is Engineering a profession (don't just believe the Wikipedia articles)?
+	yes
+Is Software Engineering a profession? Or, in what ways is Software Engineering a profession and in what ways is Software Engineering not a profession?
+	Yes - has regulations and ethical principles that are adhered to, has common body of knowledge about the field.
+Same question but for Computer Engineering.
+no?
+Is Bioinformatics different from Software Engineering or not?
+yes
+How does Computer Science differ from Software Engineering?
+Computer science is interested in the what/why of programming principles - eg. looking into algorithms, data structures, engineering uses these concepts as tools to achieve an end product.
+Is programming the same as Software Engineering?
+No, programming is just a small subset of software engineering
+Question 2:
+
+What is the difference between a code of ethics and a code of conduct?
+Ethics -> actions
+Conduct -> behaviour
+Why do we need such codes at all?
+Regulate ppl, safety, reliability, accountability
+Form into groups and compare two of the codes of ethics/conduct above.
+Codes of ethics 2nd and 5th link:
+5th link has very general principles - eg. sustainability, integrity - that employees should take into account in all aspects of their work. 2nd link has slightly more ‘profession’ specific points, involving management, client/employer. Similar ideas and both broadly applicable.
+Do these codes have anything particular to do with Engineering or Software Engineering, e.g. how do the codes differ from a code for medical practitioners?
+Notably, codes of ethics seem to be quite general, with only minor specifics (e.g. product instead of service). Perhaps privacy / confidentiality.
+Different professions yields different code of conducts
+Do the two codes have any similarities/differences?
+See above
+What situations would count as breaches of the codes? Give some examples.
+
+Lying, discrimination, not pointing out other ppl breaches of the code, poor communication
+How would the codes guide your actions when you might otherwise be in breach?
+They would reveal to you that your actions are going to break the code, and thus you wouldn't do it, so the code prevented you from breach?
+Do the codes give adequate guidance of what to do in these situations?
+No concrete guidance, seek external help instead. They can serve as a general guide for what to do, but you have to take from them what to do in a specific scenario.
+Have you come across activities that might be in breach of these codes?
+Chegg study
+How does this compare to the UNSW student code?
+Similar ideas regarding treating colleagues and resources with respect. Some specific requirements like complying with enrolment requirements. Says to maintain university’s reputation, similar to how employees should uphold the reputation of a profession.
+Thanks guys :P
+
+reflection. 
