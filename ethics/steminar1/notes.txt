@@ -1,0 +1,24 @@
+The big question is: should your data be collected and monitored?
+
+Suspicious sign in attempt/location has saved me more than enough times for it to be worth it. This is only possible
+if they track my location. It would seem the intent behind storing the data and what it is used for matters. I want
+them to notify me of sus login attempts, i don't want them to hand that location data off to some company in my 
+area who then repeatedly calls me.
+
+Advertisements {
+	- they can be useful, i've definitely bought things that we advertised to me and i like them
+	- they can also be annoying, should have the option to turn ads off
+
+}
+
+Mitigations {
+	- stored data should be encrypted in a sophisticated manner so that hackers cannot benefit from it
+	- adblock
+}
+
+Non-optional data {
+	- by nature of the internet, some data has to be stored i.e. it would be very hard to run a site if you
+	aren't allowed to store any data about users. Authentication requires storing data. 2FA requires storing a
+	phone number. Products have to be shipped to an address (but i guess that doesn't strictly have to be
+	stored).
+}

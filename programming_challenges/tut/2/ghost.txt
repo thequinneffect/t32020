@@ -1,0 +1,32 @@
+/* Ghost Encounters
+http://orac.amt.edu.au/cgi-bin/train/problem.pl?set=aio20&problemid=1129
+*/
+
+#include <cstdio> // printf, scanf, freopen
+#include <iostream> // cin, cout, cerr
+#include <map>
+using namespace std;
+
+int main () {
+    freopen("ghostin.txt", "r", stdin);
+    freopen("ghostout.txt", "w", stdout);
+
+    int N, K;
+    cin >> N >> K;
+
+    map<int, int> m;
+
+    for (int i = 0; i < N; i++) {
+        int x, t;
+        cin >> x >> t;
+        int s = t - K * x;
+        m[s]++;
+    }
+
+    int best = 0;
+    for (auto s : m) {
+        best = max(best, s.second);
+    }
+    printf("%d\n", best);
+
+}
