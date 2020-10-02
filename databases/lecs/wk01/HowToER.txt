@@ -1,0 +1,53 @@
+Entities {
+	- squares
+	- represent objects (usually implied by nouns)
+}
+
+Relationships {
+	- diamonds
+	- represent relationships between entities/objects
+	- they often are the result/side-affect of an operation e.g. operation = he buys a book, relationship = the book is owned by him, he owns the book
+
+	- degree : number of entity TYPES involved in the relationship
+	- cardinality : the number of INSTANCES of a specific entity type in a specific relationship
+}
+
+Attributes {
+	- circles
+	- can be attached to Entities or Relationships
+	- represent properties/characteristics/attributes of the Entity or Relationship they are attached to
+	- attribute names are underlined if they are (part of) the primary key
+	
+	Types {
+		- dotted = derived : attributes that are drawn by a dotted circle means that they are derived from some other attribute
+		e.g. age can be derived from d.o.b
+		- multi-lined = multi-valued : attributes drawn as two concentric circles means that they represent a multi-valued attribute
+		- tree = composite : attributes that are drawn as children of other attributes mean that they together form a composite attribute
+		e.g. [Person] -> (address) -> (street) (state) (country)
+	}
+}
+
+Lines {
+	- reading : the line on the entity itself determines participation i.e. MUST vs MAY. The line on the opposing entity determines the magnitude i.e. 
+	ONE vs ONE OR MORE
+	- plain line : this is a constraint on the maximum. It means there is no maximum i.e. many instances of this entity can participate in the relationship.
+		- it makes no sense to cap the amount of accounts that a branch of a bank can have at it.
+	- arrow : this is a constraint on the maximum. It means a maximum of 1 instance of this entity type participating in the relationship (the entity it is
+	pointing to).
+		- it often makes sense to cap the amount of addresses a building can have to 1.
+
+	- boldness: a bold line enforces a minimum of 1 i.e. an instance of the entity the bold line is connected to 
+	must participate in that relationship.
+	- a regular line doesn't enforce a minimum i.e. an instance of the entity connected by a regular line doesn't
+	necessarily participate in that relationship.
+	- if you assert one side exists, then by the nature of relationships, the other side has to exist. For this reason, 
+	you can ignore the lower bound for the other side and just look at the upper bound in this context. For example,
+	in scenario 1 above, not all lecturers have to teach a course, but if we assume they do, then we are guaranteed 
+	that a course exists in this case otherwise the relationship wouldn't be possible.
+	- when drawing a conclusion for an entity in a relationship, you look at its own line to determine whether it itself
+	must participate (its minimum), then you check whether the other entities line is an arrow or plain line to see
+	if it is 1 or many. This follows the pattern: "A foo [MAY/MUST] bar [ONE/ONE OR MORE] foobar".
+	- another way of wording the above is: boldness only matters to the owning entity, arrowness only matters to the
+	other entitiy.
+	
+}
