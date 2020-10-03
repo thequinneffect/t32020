@@ -2,7 +2,7 @@
 
 using namespace std;
 
-#define LIMIT 100000 + 10
+#define LIMIT 100000 + 100
 #define MODNUM 1000000007
 typedef pair<int, int> pi;
 typedef pair<long long, long long> pll;
@@ -34,6 +34,10 @@ int main() {
     // for (int i=0; i < q; i++) cout << qrs[i].first << " " << qrs[i].second << endl; 
 
     f[1] = f1; f[2] = f2; d[1] = 1; d[2] = 1;
+    // by the nature of the question, we will only ever need troynacci(n) at maximum,
+    // so i'll presolve those now.
+    for (int i=3; i <= n; i++) troynacci(i);
+    cout << "done\n";
 
     for (int i=0; i < q; i++) {
         for (ll j=qrs[i].first; j <= qrs[i].second; j++) {

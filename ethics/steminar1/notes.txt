@@ -4,6 +4,13 @@ Suspicious sign in attempt/location has saved me more than enough times for it t
 if they track my location. It would seem the intent behind storing the data and what it is used for matters. I want
 them to notify me of sus login attempts, i don't want them to hand that location data off to some company in my 
 area who then repeatedly calls me.
+This is a consequential approach because I am saying that it is only bad for them to collect my
+data if they use it for a purpose i don't agree with.
+
+Data-breaches {
+	- should they store certain information if it has the potential to be obtained by hackers in a data breach?
+	- if you're involved in a data breach, a company has to inform you. I've gotten emails like this.
+}
 
 Advertisements {
 	- they can be useful, i've definitely bought things that we advertised to me and i like them
@@ -22,3 +29,16 @@ Non-optional data {
 	phone number. Products have to be shipped to an address (but i guess that doesn't strictly have to be
 	stored).
 }
+
+unethical {
+	- it is certainly unethical to bury what data will be collected in a huge ToS sheet. No one reads those. It needs to be 
+	simpler and straight to the point.
+}
+
+- get data on an on-need basis
+- unethical echo-chambers. but does intention matter when deciding unethicalness? echo chambers are kindn of a byproduct of 
+algorithm that are out of our control, it wasn't really the intention for echo chambers to form, they just did naturally
+form because of how the algorithms work (only serve up what people already like).
+
+- taking different roles! i'll pretend to be x, they'll pretend to be y -> each role comes to a different conclusion
+- activity: fake data-dump of a person?
