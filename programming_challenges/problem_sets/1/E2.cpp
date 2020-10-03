@@ -7,39 +7,6 @@ using namespace std;
 unsigned long long n, k;
 string s, t;
 
-pair<int, string> do_lower(int i) {
-    // init
-    pair<int, string> res;
-    res.first = -1;
-    res.second = s;
-    for (int j=i+1; j < n; j++) {
-        if (s[j] == 'a') {
-            if (res.first == -1) {
-                res.first = j;
-                // place the b here
-                res.second.replace(j, 1, "b");
-            } 
-        }
-    }
-    return res;
-}
-
-pair<int, string> do_higher(int i) {
-    pair<int, string> res;
-    res.first = -1;
-    res.second = t;
-    for (int j=i+1; j < n; j++) {
-        if (t[j] == 'b') {
-            if (res.first == -1) {
-                res.first = j;
-                // place the a
-                res.second.replace(j, 1, "a");
-            }
-        }
-    }
-    return res;
-}
-
 int main() {
 
     cin >> n >> k >> s >> t;
@@ -52,82 +19,9 @@ int main() {
         return 0;
     }   
 
-    set<string> strings;
     int nstrings = 0;
-    int i=0;
-
-    // add s and t because if any substrings of s and t differ, that means
-    // s and t differ first
-    if (nstrings+2 <= k) {
-        strings.insert(s);
-        strings.insert(t);
-        nstrings += 2;
-    } else if (nstrings+1 <= k) {
-        strings.insert(s);
-        nstrings++;
-    }
-
-    int c = 0;
-    // loop through s and t whilst we havent yet found k strings 
-    // or get to the end of them. whatever happens first.
-    for (nstrings=0, i=0; nstrings < k && i < n; i++) {
-        
-        // if they don't differ, move on
-        if (s[i] == t[i]) {
-            c += nstrings-1;
-            continue;
-        }
-
-        // if they do differ, we can choose upper bound or lower bound
-        c += 2;
-
-        // option 1: lower bound
-        pair<int, string> lower = do_lower(i);
-        cout << "lower: differ index = " << lower.first << ", string = " << lower.second << endl; 
-
-        // option 2: upper bound
-        pair<int, string> upper = do_higher(i);
-        cout << "upper: differ index = " << upper.first << ", string = " << upper.second << endl; 
-
-        // take the one that differed first
-        if (lower.first < upper.first) {
-            nstrings++;
-            strings.insert(lower.second);
-            // and also add all possible variations up until where the other one differed
-            s = lower.second;
-        } else if (upper.first < lower.first) {
-            nstrings++;
-            strings.insert(upper.second);
-            t = upper.second;
-        } else { // they differed at the same index, take both if we can
-            if (nstrings+2 <= k) { // take both
-                nstrings += 2;
-                strings.insert(lower.second);
-                strings.insert(upper.second);
-            } else { // take lower
-                nstrings++;
-                strings.insert(lower.second);
-            }
-        }
-    }
-
-    cout << "missing strings found were; " << endl;
-    for (auto str : strings) {
-        if (str == s) cout << str << " (s)" << endl;
-        else if (str == t) cout << str << " (t)" << endl;
-        else cout << str << endl;
-    }
-
-    set<string> prefixes;
-    for (auto it = strings.begin(); it != strings.end(); it++) {
-        string current_str = *it;
-        for (int i=0; i < n; i++) {
-            string prefix = current_str.substr(0, i+1);
-            //cout << "current prefix is: " << prefix << endl;
-            prefixes.insert(prefix);
-        }
-    }
-    cout << prefixes.size() << endl;
+    
+    
 }
 
 /* Notes
