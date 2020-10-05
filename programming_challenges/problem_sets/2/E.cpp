@@ -68,6 +68,7 @@ int main() {
     }
     // now add the original sequence and print
     for (int i=1; i <= n; i++) {
+        seq[i] %= MODNUM;
         seq[i] += propagation[i];
         seq[i] %= MODNUM;
         cout << seq[i] << " ";
