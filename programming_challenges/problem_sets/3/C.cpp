@@ -8,6 +8,8 @@ int main() {
     cin >> n >> k >> s;
     //cout << n << " " << k << " " << s << endl;
 
+    int wire_all_cost = n(n+1)/2;
+
     for (int i=1; i<=n; i++) {
         
     }
