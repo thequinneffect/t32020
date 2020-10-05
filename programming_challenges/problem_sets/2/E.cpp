@@ -72,5 +72,5 @@ int main() {
         seq[i] %= MODNUM;
         cout << seq[i] << " ";
     }
-    cout << endl;
+    return 0;
 }
