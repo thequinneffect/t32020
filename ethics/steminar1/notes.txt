@@ -7,6 +7,11 @@ area who then repeatedly calls me.
 This is a consequential approach because I am saying that it is only bad for them to collect my
 data if they use it for a purpose i don't agree with.
 
+Fishing attempts and scams {
+	- It is scary how much information some scammers are able to gather about you or about a purchase you have made etc 
+	in order to create a fake email asking for an account to refund into for example because the product has gone out of stock.
+}
+
 Data-breaches {
 	- should they store certain information if it has the potential to be obtained by hackers in a data breach?
 	- if you're involved in a data breach, a company has to inform you. I've gotten emails like this.
@@ -42,3 +47,31 @@ form because of how the algorithms work (only serve up what people already like)
 
 - taking different roles! i'll pretend to be x, they'll pretend to be y -> each role comes to a different conclusion
 - activity: fake data-dump of a person?
+
+
+
+Dataveillance from a companies point of view;
+
+Dataveillance is ethical because it has good outcomes. These outcomes are;
+
+Improved security
+- how many times have you received a suspicious sign-in attempt email because someone
+who is believed not to be you signed into your account? They were only able to be stopped because
+their ip/location doesn't match your usual one. We can only know this if we store it.
+- how many times have you received a 2FA code when you haven't attempted to sign in? Clearly
+someone else is trying to sign into your account, and now they can't because they don't have the
+2fa code that was sent to your mobile. This is only possible if we can have your mobile number. 
+
+Improved Experience
+- By collecting information about you, we are able to tailor your online experience just
+to suit your needs e.g. recommending videos that you will find interesting
+- COUNTER ARGUMENT: this can lead onto a counter argument by the consumer, in which they
+argue that echo-chambers are causing far more damage than it is worth e.g. polarisation
+
+Improved advertising
+- Everybody hates getting ads, but with more data we can more accurately predict what you're 
+interested in and serve up ads based on that!
+- COUNTER ARUGMENT: consumer can argue that they don't want personalised ads. Perhaps they are
+into something that they consider embarassing and they don't want ads shown for that on their
+devices because people might see them and then know they are interested in said thing. Furthermore,
+the ad profiles are somewhat inaccurate.

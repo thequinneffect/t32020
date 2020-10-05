@@ -1,0 +1,6 @@
+today: meeting at 4pm which needs data dump draft
+tomorrow: ethics seminar material [mid], problem set 2 [mid]
+wednesday: seminar reflection [easy]
+friday: db quiz [easy], lecture summaries [hard]
+sunday: db assignment [hard]
+monday: problem set 3 [hard]
