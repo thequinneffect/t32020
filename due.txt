@@ -1,0 +1,7 @@
+
+today: do lecture summary of first lecture in morning before 1pm when the second lecture happens. 
+	ethics seminar material [mid], problem set 2 [mid]
+wednesday: seminar reflection [easy]
+friday: db quiz [easy], lecture summaries [hard]
+sunday: db assignment [hard]
+monday: problem set 3 [hard]
