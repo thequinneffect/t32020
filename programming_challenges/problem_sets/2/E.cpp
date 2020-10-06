@@ -17,7 +17,7 @@ ll d[LIMIT];
 
 ll troy(ll i) {
     if (d[i]) return f[i];
-    f[i] = a*troy(i-2) + b*troy(i-1);
+    f[i] = ((a*troy(i-2) % MODNUM) + (b*troy(i-1) % MODNUM)) % MODNUM;
     d[i] = 1;
     return f[i];
 }
@@ -34,7 +34,10 @@ int main() {
     // cout << endl;
     // for (int i=0; i < q; i++) cout << qrs[i].first << " " << qrs[i].second << endl; 
 
-    f[1] = f1; f[2] = f2; d[1] = 1; d[2] = 1;
+    f[1] = f1 % MODNUM; f[2] = f2 % MODNUM; d[1] = 1; d[2] = 1;
+
+    // will only ever need troy(n) at most
+    for (int i=3; i <=n; i++) troy(i);
 
     // now for each query
     for (int i=0; i < q; i++) {
