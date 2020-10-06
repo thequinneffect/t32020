@@ -46,20 +46,20 @@ int main() {
         if (l == r) {
             // propagation[l-1] = 0 because we don't add anything here and the array is prefilled with 0
             propagation[l] = ((propagation[l] % MODNUM) + (troy(1) % MODNUM)) % MODNUM;
-            propagation[l+1] = ((propagation[l+1] % MODNUM) +(- b*troy(1) + MODNUM) % MODNUM) % MODNUM; // and now prop[l+1] += a*prop[l-1] + b*prop[l] i.e. prop[l+1] += 0 + b*troy(1) i.e. net result of prop[l+1] is -b*troy(1)+b*troy(1) == 0
-            propagation[l+2] = ((propagation[l+2] % MODNUM) +(- a*troy(1) + MODNUM) % MODNUM) % MODNUM; // prop[l+2] += a*prop[l] + b*prop[l+1] = a*troy(1) + b*0 (from above) = a*troy(0) i.e. net result of prop[l+2] is -a*troy(1)+a*troy(1) == 0
+            propagation[l+1] = ((propagation[l+1] % MODNUM) + MODNUM - ( (b * troy(1)) % MODNUM) ) % MODNUM; // and now prop[l+1] += a*prop[l-1] + b*prop[l] i.e. prop[l+1] += 0 + b*troy(1) i.e. net result of prop[l+1] is -b*troy(1)+b*troy(1) == 0
+            propagation[l+2] = ((propagation[l+2] % MODNUM) + MODNUM - ( (a * troy(1)) % MODNUM) ) % MODNUM; // prop[l+2] += a*prop[l] + b*prop[l+1] = a*troy(1) + b*0 (from above) = a*troy(0) i.e. net result of prop[l+2] is -a*troy(1)+a*troy(1) == 0
             // now prop[l+3] and so on will be equal to a*troy(0) + b*troy(0) == 0, and hence the propagation has stopped.
         } else { // need to propagate to troy(2) and so on, not just cancel after adding troy(1)
             // propagation[l-1] = 0, like above
             propagation[l] = ((propagation[l] % MODNUM) + (troy(1) % MODNUM)) % MODNUM; // because (i-l+1) = 1 when i=l
-            propagation[l+1] = ((propagation[l+1] % MODNUM) + (troy(2) % MODNUM) +(- b*troy(1) + MODNUM) % MODNUM) % MODNUM; // -b because prop[l+1] += a*prop[l-1] + b*prop[l] = 0 + b*troy(1), hence we need to -b*troy(1) to not double count it
+            propagation[l+1] = ((propagation[l+1] % MODNUM) + (troy(2) % MODNUM) + MODNUM - ( ( b * troy(1)) % MODNUM) ) % MODNUM; // -b because prop[l+1] += a*prop[l-1] + b*prop[l] = 0 + b*troy(1), hence we need to -b*troy(1) to not double count it
             // now we have troy(1) and troy(2), troy(3) etc. can be deduced from these if the range is bigger than two
             // but now we need to make sure the propagation stops after r
             // we have some troy(x) where x >= 2, assuming it is 2 then r-l=1, we get, prop[r+1] += a*prop[r-1] + b*prop[r] = a*prop[l] + b*prop[l+1] = a*troy(1) + b*troy(2),
             // which by the definition of troy is the same as troy(3), hence we remove troy(3)
-            propagation[r+1] = ((propagation[r+1] % MODNUM) +(- 1*troy(r-l+2) + MODNUM) % MODNUM) % MODNUM; // in our test case, -troy(3)
+            propagation[r+1] = ((propagation[r+1] % MODNUM) + MODNUM - ( ( 1 * troy(r-l+2) ) % MODNUM)) % MODNUM; // in our test case, -troy(3)
             // now for the r+2 position, we need to cancel out a*troy(2), so we do r-1+1 because in our case r-1=1, hence r-1+1=2
-            propagation[r+2] = ((propagation[r+2] % MODNUM) +(- a*troy(r-l+1) + MODNUM) % MODNUM) % MODNUM;
+            propagation[r+2] = ((propagation[r+2] % MODNUM) + MODNUM - ( ( a * troy(r-l+1)) % MODNUM)) % MODNUM;
             // now that this works for the case of r = l+1, it should work for all l,r because of how the troy values are generated
         }
     }
