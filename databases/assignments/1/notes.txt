@@ -4,3 +4,27 @@ style {
 	- name foreign keys after the table being referenced e.g. staff or staff_id
 	OR after the relationship being modelled e.g. teaches
 }
+
+Users {
+	- name
+	- email address
+	- password NOT NULL
+	- admin privs
+}
+
+Groups {
+	- name
+	- ownedBy NOT NULL
+}
+
+Calendars {
+	- name
+	- ownedBy NOT NULL
+}
+
+Events {
+	- title
+	- visibility
+	- ownedBy NOT NULL
+	- attachedTo NOT NULL
+}
