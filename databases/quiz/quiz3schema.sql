@@ -7,7 +7,7 @@ create table Accounts (
 create table Customers (
     id integer,
     primary key (id)
-)
+);
 
 create table Owner (
     account char(4),
