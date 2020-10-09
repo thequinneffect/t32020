@@ -1,3 +1,10 @@
+insert into Customers values (12345);
+insert into Customers values (12666);
+insert into Customers values (32451);
+insert into Customers values (22735);
+insert into Customers values (76543);
+insert into Customers values (92754);
+
 insert into Accounts values ('UNSW', 'U-245', 1000);
 insert into Accounts values ('UNSW', 'U-291', 2000);
 insert into Accounts values ('Randwick', 'R-245', 20000);
