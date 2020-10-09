@@ -47,9 +47,14 @@ int main() {
         }
     }
 
-    // whilst the current router isn't enough to end
-    for (int i=1; i <= n; i++) {
-        cout << ans[i] << " ";
+    // now pick the router that is earliest and cover to the end
+    int strlen = s.length();
+    for (int i=strlen-k-1; i < strlen; i++) {
+        if (s[i] == '1') {
+            // this is our answer
+            cout << ans[i+1] << endl;
+            return 0;
+        }
     }
-    cout << endl;
+    cout << ans[n] << endl;
 }
