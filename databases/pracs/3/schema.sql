@@ -32,7 +32,7 @@ create table WorksFor (
 	employee    char(11),
 	department  depid,
 	percentage  float check (percentage > 0.0 and
-								percentage <= 1.0),
+								percentage <= 100.0),
 	primary key (employee, department),
 	foreign key (employee) references Employees(tfn),
 	foreign key (department) references Departments(id)
