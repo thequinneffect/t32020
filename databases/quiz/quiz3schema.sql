@@ -1,7 +1,8 @@
 create table Accounts (
     branchName text,
     accountNo char(4),
-    balance integer
+    balance integer,
+    primary key (accountNo)
 );
 
 create table Customers (
