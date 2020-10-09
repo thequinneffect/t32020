@@ -1,6 +1,6 @@
 create table Accounts (
     branchName text,
-    accountNo char(4),
+    accountNo char(5),
     balance integer,
     primary key (accountNo)
 );
@@ -11,7 +11,7 @@ create table Customers (
 );
 
 create table Owner (
-    account char(4),
+    account char(5),
     customer integer,
     primary key (account, customer),
     foreign key (account) references Accounts(accountNo),
