@@ -23,7 +23,7 @@ create table Departments (
 create table DeptMissions (
 	department  depid,
 	keyword     varchar(20),
-	primary key (department, keyword)
+	primary key (department, keyword),
 	foreign key (department) references (Departments.id)
 );
 
