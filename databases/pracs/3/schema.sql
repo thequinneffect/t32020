@@ -1,10 +1,11 @@
 -- COMP3311 Prac 03 Exercise
 -- Schema for simple company database
 
-create domain depid as char(3) check (val ~ '[0-9]{3}');
+create domain depid as char(3) check (value ~ '[0-9]{3}');
+create domain taxno as char(11) check (value ~ '[0-9]{3}-[0-9]{3}-[0-9]{3}');
 
 create table Employees (
-	tfn         char(11) check (tfn ~ '[0-9]{3}-[0-9]{3}-[0-9]{3}'),
+	tfn         taxno,
 	givenName   varchar(30) not null,
 	familyName  varchar(30),
 	hoursPweek  float check (hoursPweek >= 0 and
@@ -15,7 +16,7 @@ create table Employees (
 create table Departments (
 	id          depid,
 	name        varchar(100) unique,
-	manager     char(11) unique not null,
+	manager     taxno unique not null,
 	primary key (id),
 	foreign key (manager) references Employees(tfn)
 );
