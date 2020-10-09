@@ -1,43 +1,55 @@
 #include <iostream>
+#include <queue>
 
 using namespace std;
 
 #define MAXN 200000 + 100
 int ans[MAXN];
+queue<int> pq;
 
 int main() {
     int n,k;
     string s;
     cin >> n >> k >> s;
     //cout << n << " " << k << " " << s << endl;
-
-    int prev_router = -1;
-    if (n == 1) return 1; // (whether you place a router or wire it, it costs 1)
+    
+    if (n == 1) { cout << "1" << "\n"; return 0; } // (whether you place a router or wire it, it costs 1)
+    if (s.find('1') == string::npos) { cout << (n*(n+1))/2 << "\n"; return 0; }
     for (int i=1; i<=n; i++) {
+        
+        bool done = false;
         // if we are at a routerable room
         if (s[i-1] == '1' ) {
-            // if this router isn't in the previous routers signal, take it
-            if (prev_router != -1 && prev_router + k < i) {
-                ans[i] = ans[i-1] + i;
-                prev_router = i;
-            // if this router is in the previous routers signal
-            } else if (prev_router != -1 && prev_router + k >= i) {
-                
+            // check if the looked back to room is already covered by a router
+            while (!done && !pq.empty()) {
+                int r = pq.front();
+                // if it's not in range, pop it
+                if (abs((i-(k+1))-r) > k) pq.pop();
+                else { 
+                    ans[i] = i + r; 
+                    done = true; 
+                }
             }
+            if (!done) ans[i] = i + ans[i-(k+1)];
+            pq.push(i);
+        } else {
+            // if this room is in range of a router, no cost
+            while (!done && !pq.empty()) {
+                int r = pq.front();
+                // if it's not in range, pop it
+                if (i-r > k) pq.pop();
+                else {
+                    ans[i] = ans[i-1];
+                    done = true;
+                }
+            }
+            if (!done) ans[i] = ans[i-1] + i;
         }
     }
+
+    // whilst the current router isn't enough to end
+    for (int i=1; i <= n; i++) {
+        cout << ans[i] << " ";
+    }
+    cout << endl;
 }
-
-/*
-    - choices for each room are;
-    1. if in wifi range of router -> do nothing (cost 0) i.e. ans[i] = ans[i-1]
-    else
-    2. if no room for router -> wire it (cost i) i.e. ans[i] = ans[i-1] + i
-    3. else room for router -> router it (cost i) 
-    - routering is better because it covers other rooms
-    - note that a later router won't always save you more money (router on room n only gives half of its benefit because it only
-    has rooms less than it)
-
-    ans[0] = 0, when you get to a router that you want to use, you can set ans[i] = ans[i-k]
-    when you get to a router you want to check whether
- */
