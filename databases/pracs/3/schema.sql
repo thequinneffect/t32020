@@ -17,14 +17,14 @@ create table Departments (
 	name        varchar(100) unique,
 	manager     char(11) unique not null,
 	primary key (id),
-	foreign key (manager) references (Employees.tfn)
+	foreign key (manager) references Employees(tfn)
 );
 
 create table DeptMissions (
 	department  depid,
 	keyword     varchar(20),
 	primary key (department, keyword),
-	foreign key (department) references (Departments.id)
+	foreign key (department) references Departments(id)
 );
 
 create table WorksFor (
@@ -33,6 +33,6 @@ create table WorksFor (
 	percentage  float check (percentage > 0.0 and
 								percentage <= 1.0),
 	primary key (employee, department),
-	foreign key (employee) references (Employees.tfn),
-	foreign key (department) references (Departments.id)
+	foreign key (employee) references Employees(tfn),
+	foreign key (department) references Departments(id)
 );
