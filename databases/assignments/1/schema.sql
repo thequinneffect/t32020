@@ -41,8 +41,9 @@ Groups
 */
 create table Groups (
 	id          serial,
-	name        text    not null,
+	name        text    not null, -- not unique, 2 users can have a group each of the same name
 	owner       integer not null, -- total participation
+	unique      (name, owner),    -- user cannot have 2 groups of the same name
 	primary key (id),
 	foreign key (owner) references Users(id)
 );
@@ -62,10 +63,11 @@ different colour for their own view
 */
 create table Calendars (
 	id             serial,
-	name           text              not null, -- unique?
+	name           text              not null, -- not unique, 2 users can have same named calendar
 	default_access Accessibility_type not null default 'none', -- has, not may have
-	-- TODO: colour (use text for colour, Jas said so in forum)
+	colour         text not null,
 	owner          integer,                    -- total participation, 1-many
+	unique         (name, owner)               -- user cannot own 2 calendars of the same name
 	primary key    (id),
 	foreign key    (owner) references Users(id)
 );
@@ -96,15 +98,19 @@ create table Calendars (
 users whne the event is created)
 	- users on the list can be flagged as "Invited", "Accepted", or "Declined"
 */
+/* (part_of, title) and (created_by, title) are not unique because it makes
+ * sense that a user would want to have multiplle events of the same name,
+ * perhaps putting them on the same calendar. */
 create table Events (
 	id          serial,
-	title       text           not null, -- has, not may have
-	visibility  Visibility_type not null, -- has
-	location    point,                   -- may be associated with a location, not is
-	start_time  time           not null, -- need to know when an event begins
-	end_time    time           not null, -- need to know when an event ends
-	part_of     integer        not null, -- total participation
-	created_by  integer        not null, -- total participation
+	title       text            not null,                    -- has, not may have
+	visibility  Visibility_type not null default 'private',  -- has
+	location    point,                                       -- may be associated with a location, not is
+	start_time  time            not null,                    -- need to know when an event begins
+	end_time    time            not null,                    -- need to know when an event ends
+	part_of     integer         not null,                    -- total participation
+	created_by  integer         not null,                    -- total participation
+	-- TODO: need some check constraint here for the start_time and end_time
 	primary key (id),
 	foreign key (part_of) references Calendars(id),
 	foreign key (created_by) references Users(id)
@@ -135,7 +141,7 @@ create table Alarms (
 
 create table One_day_events (
 	event_id    integer,
-	date 		date    not null,
+	date 		date    not null, -- a day event without a date is useless
 	primary key (event_id),
 	foreign key (event_id) references Events(id)
 );
@@ -143,7 +149,7 @@ create table One_day_events (
 create table Spanning_events (
 	event_id    integer,
 	start_date  date not null,
-	end_date    date not null,
+	end_date    date not null check (end_date > start_date), -- if = you would use a one day event
 	primary key (event_id),
 	foreign key (event_id) references Events(id)
 );
@@ -155,8 +161,9 @@ create table Spanning_events (
 create table Recurring_events (
 	event_id    integer,
 	start_date  date not null, -- will have a starting date
-	end_date    date, -- may have an ending date
+	end_date    date check (end_date > start_date), -- may have an ending date
 	n_times     integer check (n_times >= 1), -- not a recurring event otherwise
+	check       (end_date is not null or n_times is not null), -- only need one really
 	primary key (event_id),
 	foreign key (event_id) references Events(id)
 );
@@ -234,7 +241,7 @@ create table Accessibility (
 create table Subscribed (
 	user_id     integer,
 	calendar_id integer,
-	-- TODO: colour
+	colour      text not null,
 	primary key (user_id, calendar_id),
 	foreign key (user_id) references Users(id),
 	foreign key (calendar_id) references Calendars(id)
