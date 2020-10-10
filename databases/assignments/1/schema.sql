@@ -142,26 +142,26 @@ create table Recurring_events (
  * and frequency are needed to be known for the tuple to make sense.
  * Otherwise you would just store it as a normal OneDayEvent. */
 create table Weekly_events (
-	event_id integer,
-	day_of_week     Day_of_week not null, -- need to know which day event is on
-	frequency       integer     not null check (frequency >= 1),
-	primary key (event_id),
-	foreign key (event_id) references Recurring_events(event_id)
+	recurring_event_id integer,
+	day_of_week        Day_of_week not null, -- need to know which day event is on
+	frequency          integer     not null check (frequency >= 1),
+	primary key (recurring_event_id),
+	foreign key (recurring_event_id) references Recurring_events(event_id)
 );
 
 create table Monthly_by_day_events (
-	event_id integer,
-	day_of_week     Day_of_week not null, -- same reason as for Weekly_events
-	week_in_month   integer not null check (week_in_month >= 1 and week_in_month <= 5),
-	primary key (event_id),
-	foreign key (event_id) references Recurring_events(event_id)
+	recurring_event_id integer,
+	day_of_week        Day_of_week not null, -- same reason as for Weekly_events
+	week_in_month      integer     not null check (week_in_month >= 1 and week_in_month <= 5),
+	primary key (recurring_event_id),
+	foreign key (recurring_event_id) references Recurring_events(event_id)
 );
 
 create table Monthly_by_date_events (
-	event_id integer,
-	date_in_month   integer not null check (date_in_month >= 1 and date_in_month <= 31),
-	primary key (event_id),
-	foreign key (event_id) references Recurring_events(event_id)
+	recurring_event_id integer,
+	date_in_month      integer not null check (date_in_month >= 1 and date_in_month <= 31),
+	primary key (recurring_event_id),
+	foreign key (recurring_event_id) references Recurring_events(event_id)
 );
 
 /* I've chosen to store the date as the date type because we were only permitted
@@ -173,10 +173,10 @@ create table Monthly_by_date_events (
  * part of this date stamp would just be ignored by the program using it. It may
  * even end up being helpful if it stores the year this annual event was started. */
 create table Annual_events (
-	event_id integer,
-	date            date not null,
-	primary key (event_id),
-	foreign key (event_id) references Recurring_events(event_id)
+	recurring_event_id integer,
+	date               date not null,
+	primary key (recurring_event_id),
+	foreign key (recurring_event_id) references Recurring_events(event_id)
 );
 
 -- Relationship tables
