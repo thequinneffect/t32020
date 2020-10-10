@@ -45,7 +45,7 @@ create table Calendars (
 	default_access Accessibility_type not null default 'none', -- has, not may have
 	colour         text               not null,
 	owner          integer            not null,                -- total participation, 1-many
-	unique         (name, owner)                               -- user cannot own 2 calendars of the same name
+	unique         (name, owner),                              -- user cannot own 2 calendars of the same name
 	primary key    (id),
 	foreign key    (owner) references Users(id)
 );
