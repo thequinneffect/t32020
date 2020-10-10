@@ -60,7 +60,7 @@ create table Events (
 	id          serial,
 	title       text            not null,                   -- has, not may have
 	visibility  Visibility_type not null default 'private', -- has
-	location    point,                                      -- may be associated with a location, not is
+	location    text,                                       -- may be associated with a location, not is
 	start_time  time,
 	end_time    time,
 	part_of     integer         not null,                   -- total participation
