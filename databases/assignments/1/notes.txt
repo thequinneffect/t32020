@@ -1,8 +1,25 @@
 style {
 	- use a capital letter and plural for table names e.g. Students
-	- use camel case for attributes e.g. firstName
-	- name foreign keys after the table being referenced e.g. staff or staff_id
+	- use camel case for attributes e.g. firstName (but for this assignment use snake case e.g. first_name)
 	OR after the relationship being modelled e.g. teaches
+	- primary and foreign keys are defined at the bottom of the table
+	- name foreign keys after the table being referenced e.g. staff or staff_id
+	- foreign keys in entity tables are named after the relationship e.g. enrolledIn or enrolled_in
+	- foreign keys in relationship tables are named "table"_id e.g. studentsId or students_id
+}
+
+reminders {
+	- you cannot do total participation in a many-to-many relationship (because the relationship
+	table is separate to the entity table)
+	- can use default for a default value
+	- check () conditions cant contain select queries in psql
+	- you can name constraints if you like to make them more readable e.g. yVal integer constraint xyorder check (yVal > xVal)
+	- use text unless there is a size evident from the context
+}
+
+todo/clarifications {
+	- how do i know whether something is important enough to be not null?
+		- ofc things that are primary key or full participation must be not null, but they made the email and name for users not null?
 }
 
 Users {
