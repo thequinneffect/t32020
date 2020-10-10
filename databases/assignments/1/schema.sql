@@ -11,34 +11,22 @@ create type Day_of_week as enum ('mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'
 
 -- Entity tables
 
-/*
-Users
-- individuals who use the calendar
-- we need to know at least their name and email address
-- they also have a non-empty password for authentication
-- some (very few) users have administration privileges
-(we don't need to specify what these privileges are in the data model)
-*/
 /* The reason I chose is_admin to be not null is because whilst it says
  * "some (very few) user have ...", that is in relation to admin privileges
  * specifically. This doesn't actually say whether the field itself may
  * or may not be null, just that when it isn't null, it's most likely
- * false (hence the default to false as well). */
+ * false (hence the default to false as well). I've not put any character
+ * constraints on the name because it's ambigious if the application
+ * will allow users to use numbers, special chars, etc. in their names. */
 create table Users (
 	id          serial,
-	name        text    not null,               -- need to know, not may know
-	email       text    not null unique,        -- need to know
-	passwd      text    not null,               -- they have, not may have
-	is_admin    boolean not null default false, -- see block comment
+	name        text    not null,                                 -- need to know, not may know
+	email       text    not null unique check (email like '%@%'), -- need to know
+	passwd      text    not null,                                 -- they have, not may have
+	is_admin    boolean not null default false,                   -- see block comment
 	primary key (id)
 );
 
-/*
-Groups
-- named collections of individual users
-- useful as shorthand for scheduling events for specific groups
-- each group is owned by a user, who maintains the list of members
-*/
 create table Groups (
 	id          serial,
 	name        text    not null, -- not unique, 2 users can have a group each of the same name
@@ -48,69 +36,37 @@ create table Groups (
 	foreign key (owner) references Users(id)
 );
 
-/*
-Calendars
-- named collections of events (e.g. "John's Weekly Meetings/Classes")
-- each event is attached to a specific calendar
-- each calendar has accessibility restrictions (per user and default)
-(e.g. some users have read/write, some have read-only, some have no access)
-- if a user has read permission on a calendar, they see private event titles 
-instead of "Busy"
-- each calendar is owned by a user; a user may own many calendars;
-- users may subscribe to other peoples' calendars (if they can read them)
-- each calendar has a colour (set by its owner); a subscriber may set a 
-different colour for their own view
-*/
+/* I haven't put character range constraints on colour because some
+ * colour formats use 0x.., other could just write the colour. So it's
+ * clear some need digits and others don't, best to leave it as is. */
 create table Calendars (
 	id             serial,
-	name           text              not null, -- not unique, 2 users can have same named calendar
+	name           text               not null,                -- not unique, 2 users can have same named calendar
 	default_access Accessibility_type not null default 'none', -- has, not may have
-	colour         text not null,
-	owner          integer,                    -- total participation, 1-many
-	unique         (name, owner)               -- user cannot own 2 calendars of the same name
+	colour         text               not null,
+	owner          integer            not null,                -- total participation, 1-many
+	unique         (name, owner)                               -- user cannot own 2 calendars of the same name
 	primary key    (id),
 	foreign key    (owner) references Users(id)
 );
 
-/*
-- there are various kinds of events
-	- associated with a particular day/date (e.g. birthday)
-	- scheduled at a given time on a given day (e.g. a meeting)
-	- recurring on a regular basis (e.g. a COMP3311 lecture)
-- each event is owned by the individual user who creates it
-- each event has a title and visibility (public, private)
-	- a private event is shown simply as "Busy" in the interface
-- an event may be associated with a location (where it will occur)
-- an event may be associated with a set of individual users (invitees)
-- an event may recur in a number of ways
-	- on a particular day of the week (Mon,Tue,Wed,Thu,Fri,Sat,Sun)
-	- weekly, every 2/3/4 weeks
-	- monthly (on same date of month), every 2/3/.../11 months
-	- on the first/second/third/last Xday of each month
-	- for a fixed number of times (e.g. 10 times)
-	- annually
-- a recurring event will have a starting date and may have an ending date
-- at specified times before each event an alarm event can be triggered
-- there may be multiple alarms associated with an event
-(e.g. 15 mins before, 5 mins before, 1 minute before)
-- an event can have an associated list of users who are invited
-(we don't associate events with groups; groups are used to generate a list of invited 
-users whne the event is created)
-	- users on the list can be flagged as "Invited", "Accepted", or "Declined"
-*/
 /* (part_of, title) and (created_by, title) are not unique because it makes
  * sense that a user would want to have multiplle events of the same name,
- * perhaps putting them on the same calendar. */
+ * perhaps putting them on the same calendar. I've also made it so that
+ * you can either have or not have a start time, but if you don't have a
+ * start time you can't have an end time. A null end time just means the
+ * program will let this event run until the end of that day. */
 create table Events (
 	id          serial,
-	title       text            not null,                    -- has, not may have
-	visibility  Visibility_type not null default 'private',  -- has
-	location    point,                                       -- may be associated with a location, not is
-	start_time  time            not null,                    -- need to know when an event begins
-	end_time    time            not null,                    -- need to know when an event ends
-	part_of     integer         not null,                    -- total participation
-	created_by  integer         not null,                    -- total participation
-	-- TODO: need some check constraint here for the start_time and end_time
+	title       text            not null,                   -- has, not may have
+	visibility  Visibility_type not null default 'private', -- has
+	location    point,                                      -- may be associated with a location, not is
+	start_time  time,
+	end_time    time,
+	part_of     integer         not null,                   -- total participation
+	created_by  integer         not null,                   -- total participation
+	check       (start_time < end_time),
+	check       (start_time is not null or (start_time is null and end_time is null)),
 	primary key (id),
 	foreign key (part_of) references Calendars(id),
 	foreign key (created_by) references Users(id)
@@ -146,24 +102,31 @@ create table One_day_events (
 	foreign key (event_id) references Events(id)
 );
 
+/* Unlike the Recurring_events.end_date, this end_date was not specified to be
+ * able to be null in the spec. Also, even though end_date can be null in
+ * recurring events, it will still terminate due to n_times being completed
+ * in the case that it is null. Furthermore, from a GUI point of view, an event
+ * that spans infinitely could be problematic. I think the intended use case here
+ * is to have events that span days, weeks, months, years, maaaybe decades, but
+ * not really infinitely. */
 create table Spanning_events (
 	event_id    integer,
-	start_date  date not null,
-	end_date    date not null check (end_date > start_date), -- if = you would use a one day event
+	start_date  date    not null,
+	end_date    date    not null check (end_date > start_date), -- if = you would use a one day event
 	primary key (event_id),
 	foreign key (event_id) references Events(id)
 );
 
-/* I've made n_times nullable and >= 1 because a recurring event tuple
+/* I've made n_times nullable because a recurring event tuple
  * without n_times set could mean it recurs indefinetely until deleted.
  * I made the check >= 1 and not 2 because it could be n_times to recur, not
  * how many times it will occur in total e.g. n_times = 1 = recur once = 2 times total.*/
 create table Recurring_events (
 	event_id    integer,
-	start_date  date not null, -- will have a starting date
-	end_date    date check (end_date > start_date), -- may have an ending date
-	n_times     integer check (n_times >= 1), -- not a recurring event otherwise
-	check       (end_date is not null or n_times is not null), -- only need one really
+	start_date  date    not null,                              -- will have a starting date
+	end_date    date    check (end_date > start_date),         -- may have an ending date
+	n_times     integer check (n_times >= 1),                  -- not a recurring event otherwise
+	check       (end_date is not null or n_times is not null), -- only need one to terminate really
 	primary key (event_id),
 	foreign key (event_id) references Events(id)
 );
@@ -181,7 +144,7 @@ create table Recurring_events (
 create table Weekly_events (
 	recurring_event integer,
 	day_of_week     Day_of_week not null, -- need to know which day event is on
-	frequency       integer not null check (frequency >= 1),
+	frequency       integer     not null check (frequency >= 1),
 	primary key (recurring_event),
 	foreign key (recurring_event) references Recurring_events(event_id)
 );
@@ -207,7 +170,8 @@ create table Monthly_by_date_events (
  * second-guess the requireents or the ER design, come up with your own ER, 
  * and implement that. This would be like taking some specs from your boss and 
  * implementing something that you thought was better than the specs.". The year 
- * part of this date stamp would just be ignored by the program using it. */
+ * part of this date stamp would just be ignored by the program using it. It may
+ * even end up being helpful if it stores the year this annual event was started. */
 create table Annual_events (
 	recurring_event integer,
 	date            date not null,
@@ -260,5 +224,3 @@ create table Invited (
 	foreign key (user_id) references Users(id),
 	foreign key (event_id) references Events(id)
 );
-
--- etc. etc. etc.
