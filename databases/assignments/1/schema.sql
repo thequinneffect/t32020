@@ -4,10 +4,10 @@
 
 -- Types
 
-create type AccessibilityType as enum ('read-write','read-only','none');
-create type InviteStatus as enum ('invited','accepted','declined');
-create type VisibilityType as enum ('public', 'private');
-create type DayOfWeek as enum ('mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun');
+create type Accessibility_type as enum ('read-write','read-only','none');
+create type Invite_status as enum ('invited','accepted','declined');
+create type Visibility_type as enum ('public', 'private');
+create type Day_of_week as enum ('mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun');
 
 -- Entity tables
 
@@ -63,7 +63,7 @@ different colour for their own view
 create table Calendars (
 	id             serial,
 	name           text              not null, -- unique?
-	default_access AccessibilityType,
+	default_access Accessibility_type not null default 'none', -- has, not may have
 	-- TODO: colour (use text for colour, Jas said so in forum)
 	owner          integer,                    -- total participation, 1-many
 	primary key    (id),
@@ -99,7 +99,7 @@ users whne the event is created)
 create table Events (
 	id          serial,
 	title       text           not null, -- has, not may have
-	visibility  VisibilityType not null, -- has
+	visibility  Visibility_type not null, -- has
 	location    point,                   -- may be associated with a location, not is
 	start_time  time           not null, -- need to know when an event begins
 	end_time    time           not null, -- need to know when an event ends
@@ -173,7 +173,7 @@ create table Recurring_events (
  * Otherwise you would just store it as a normal OneDayEvent. */
 create table Weekly_events (
 	recurring_event integer,
-	day_of_week     DayOfWeek not null, -- need to know which day event is on
+	day_of_week     Day_of_week not null, -- need to know which day event is on
 	frequency       integer not null check (frequency >= 1),
 	primary key (recurring_event),
 	foreign key (recurring_event) references Recurring_events(event_id)
@@ -181,7 +181,7 @@ create table Weekly_events (
 
 create table Monthly_by_day_events (
 	recurring_event integer,
-	day_of_week     DayOfWeek not null, -- same reason as for Weekly_events
+	day_of_week     Day_of_week not null, -- same reason as for Weekly_events
 	week_in_month   integer not null check (week_in_month >= 1 and week_in_month <= 5),
 	primary key (recurring_event),
 	foreign key (recurring_event) references Recurring_events(event_id)
@@ -218,14 +218,14 @@ create table Member (
 	foreign key (group_id) references Groups(id)
 );
 
-/* The AccessibilityType enum covers all sensible values for accessibility. There
+/* The Accessibility_type enum covers all sensible values for accessibility. There
  * is no case where it is useful to have null here, and hence I have made it 
  * not null. The whole tuple would be useless if it were null as that's the only
  * useful piece of information stored on this relationship. */
 create table Accessibility (
 	user_id     integer,
 	calendar_id integer,
-	access      AccessibilityType not null, -- whole tuple is useless if this is null
+	access      Accessibility_type not null default 'none', -- whole tuple is useless if this is null
 	primary key (user_id, calendar_id),
 	foreign key (user_id) references Users(id),
 	foreign key (calendar_id) references Calendars(id)
@@ -248,7 +248,7 @@ create table Subscribed (
 create table Invited (
 	user_id     integer,
 	event_id    integer,
-	status      InviteStatus not null, -- whole tuple is useless if this is null
+	status      Invite_status not null default 'invited', -- whole tuple is useless if this is null
 	primary key (user_id, event_id),
 	foreign key (user_id) references Users(id),
 	foreign key (event_id) references Events(id)

@@ -31,6 +31,8 @@ todo/clarifications {
 	- does the date field in OneDayEvents require "date"
 	- go through the schema and add check () statements in to protect data types, especially text ones
 	- do i change the types up the top into _ separate names or keep them in camel case?
+	- not null enums need a default
+	- check if some of the foreign keys need a not null constraint on them
 }
 
 Users {
