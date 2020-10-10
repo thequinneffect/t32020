@@ -20,6 +20,17 @@ reminders {
 todo/clarifications {
 	- how do i know whether something is important enough to be not null?
 		- ofc things that are primary key or full participation must be not null, but they made the email and name for users not null?
+		- they did this because it says "every use has" which implies every user must have.
+		- you can only omit not null if it says "may"
+	- at the end, check if all fields that are supposed to be used as foreign keys are indeed listed at the bottom of the tbles as fkeys
+	- do the same as above except for pkey
+	- check if i've accidentally written not null where it is implicity implied because its part of a pkey
+	- check if any foreign key fields need not null on them
+	- check if i've missed writing not null on something (i.e. is total participation or is not a "may" condition)
+	- should start_time and end_time be not null on the event?
+	- does the date field in OneDayEvents require "date"
+	- go through the schema and add check () statements in to protect data types, especially text ones
+	- do i change the types up the top into _ separate names or keep them in camel case?
 }
 
 Users {
