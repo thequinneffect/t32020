@@ -1,6 +1,61 @@
 style {
 	- use a capital letter and plural for table names e.g. Students
-	- use camel case for attributes e.g. firstName
-	- name foreign keys after the table being referenced e.g. staff or staff_id
+	- use camel case for attributes e.g. firstName (but for this assignment use snake case e.g. first_name)
 	OR after the relationship being modelled e.g. teaches
+	- primary and foreign keys are defined at the bottom of the table
+	- name foreign keys after the table being referenced e.g. staff or staff_id
+	- foreign keys in entity tables are named after the relationship e.g. enrolledIn or enrolled_in
+	- foreign keys in relationship tables are named "table"_id e.g. studentsId or students_id
+}
+
+reminders {
+	- you cannot do total participation in a many-to-many relationship (because the relationship
+	table is separate to the entity table)
+	- can use default for a default value
+	- check () conditions cant contain select queries in psql
+	- you can name constraints if you like to make them more readable e.g. yVal integer constraint xyorder check (yVal > xVal)
+	- use text unless there is a size evident from the context
+}
+
+todo/clarifications {
+	- how do i know whether something is important enough to be not null?
+		- ofc things that are primary key or full participation must be not null, but they made the email and name for users not null?
+		- they did this because it says "every use has" which implies every user must have.
+		- you can only omit not null if it says "may"
+	- at the end, check if all fields that are supposed to be used as foreign keys are indeed listed at the bottom of the tbles as fkeys
+	- do the same as above except for pkey
+	- check if i've accidentally written not null where it is implicity implied because its part of a pkey
+	- check if any foreign key fields need not null on them
+	- check if i've missed writing not null on something (i.e. is total participation or is not a "may" condition)
+	- should start_time and end_time be not null on the event?
+	- does the date field in OneDayEvents require "date"
+	- go through the schema and add check () statements in to protect data types, especially text ones
+	- do i change the types up the top into _ separate names or keep them in camel case?
+	- not null enums need a default
+	- check if some of the foreign keys need a not null constraint on them
+	- ask if i can use either point or text for location type
+}
+
+Users {
+	- name
+	- email address
+	- password NOT NULL
+	- admin privs
+}
+
+Groups {
+	- name
+	- ownedBy NOT NULL
+}
+
+Calendars {
+	- name
+	- ownedBy NOT NULL
+}
+
+Events {
+	- title
+	- visibility
+	- ownedBy NOT NULL
+	- attachedTo NOT NULL
 }
