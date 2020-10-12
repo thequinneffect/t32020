@@ -52,17 +52,37 @@ int main() {
         }
     }
 
-    // for (int i=1; i <= n; i++) cout << ans[i] << " ";
-    // cout << endl;
+    cout << "rout: ";
+    for (int i=0; i < n; i++) {
+        if (ans[i+1] > 9) cout << s[i] << "  ";
+        else cout << s[i] << " ";
+    } 
+    cout << endl;
+    cout << "cost: ";
+    for (int i=0; i < n; i++) {
+        if (ans[i+1] > 9 && i+1 < 10) cout << i+1 << "  ";
+        else cout << i+1 << " ";
+    } 
+    cout << endl;
+    cout << "ansr: ";
+    for (int i=1; i <= n; i++) cout << ans[i] << " ";
+    cout << endl;
 
     // now pick the router that is earliest and cover to the end
-    int strlen = s.length();
-    for (int i=strlen-k-1; i < strlen; i++) {
-        if (s[i] == '1') {
-            // this is our answer
-            cout << ans[i+1] << endl;
-            return 0;
+    // int strlen = s.length();
+    // for (int i=strlen-k-1; i < strlen; i++) {
+    //     if (s[i] == '1') {
+    //         // this is our answer
+    //         cout << ans[i+1] << endl;
+    //         return 0;
+    //     }
+    // }
+    int res = 0;
+    for (int i = 1; i <= n; i++) {
+        // check if we want to take this router, or if there is a later one that is better
+        if (s[i-1] == '1') {
+            
         }
     }
-    cout << ans[n] << endl;
+    cout << res << endl;
 }

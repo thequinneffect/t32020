@@ -21,8 +21,10 @@ int main() {
         cin >> n;
         if (n == -1) return 0;
 
-        if (n % 2 != 0 || n == 0) {
+        if (n % 2 != 0) {
             cout << "0\n";
+        } else if (n == 0) {
+            cout << "1\n";
         } else {
             // solve tiling
             cout << full_fill(n) << endl;
