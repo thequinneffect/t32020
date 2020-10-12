@@ -15,29 +15,34 @@ int main() {
     
     if (n == 1) { cout << "1" << "\n"; return 0; } // (whether you place a router or wire it, it costs 1)
     if (s.find('1') == string::npos) { cout << (n*(n+1))/2 << "\n"; return 0; }
+
+    // now calculate ans[i] which denotes the cheapest cost up to room i BUT taking each router
     for (int i=1; i<=n; i++) {
         
         bool done = false;
         // if we are at a routerable room
         if (s[i-1] == '1' ) {
-            // check if the looked back to room is already covered by a router
+            // check if the looked back to room is already covered by prev router
+            int e = ((i-(k+1)) < 0) ? 0 : (i-(k+1));
             while (!done && !pq.empty()) {
                 int r = pq.front();
                 // if it's not in range, pop it
-                if (abs((i-(k+1))-r) > k) pq.pop();
-                else { 
-                    ans[i] = i + r; 
+                if (abs(r - e) > k) {
+                    pq.pop();
+                } else { // it is in range, so add that cost
+                    ans[i] = i + ans[r];
                     done = true; 
                 }
             }
-            if (!done) ans[i] = i + ans[i-(k+1)];
+            if (!done) 
+            ans[i] = (i-(k+1) < 0) ? i : i + ans[i-(k+1)];
             pq.push(i);
         } else {
             // if this room is in range of a router, no cost
             while (!done && !pq.empty()) {
                 int r = pq.front();
                 // if it's not in range, pop it
-                if (i-r > k) pq.pop();
+                if (r+k < i) pq.pop();
                 else {
                     ans[i] = ans[i-1];
                     done = true;
@@ -46,6 +51,9 @@ int main() {
             if (!done) ans[i] = ans[i-1] + i;
         }
     }
+
+    // for (int i=1; i <= n; i++) cout << ans[i] << " ";
+    // cout << endl;
 
     // now pick the router that is earliest and cover to the end
     int strlen = s.length();
