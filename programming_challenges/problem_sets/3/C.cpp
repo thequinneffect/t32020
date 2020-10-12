@@ -13,38 +13,35 @@ int main() {
     cin >> n >> k >> s;
     //cout << n << " " << k << " " << s << endl;
     
-    if (n == 1) { cout << "1" << "\n"; return 0; } // (whether you place a router or wire it, it costs 1)
+    if (n == 1) { cout << "1\n"; return 0; }
     if (s.find('1') == string::npos) { cout << (n*(n+1))/2 << "\n"; return 0; }
 
-    // now calculate ans[i] which denotes the cheapest cost up to room i BUT taking each router
+    // now calculate ans[i] which denotes the cheapest cost up to room i BUT taking every router
     for (int i=1; i<=n; i++) {
         
         bool done = false;
-        // if we are at a routerable room
-        if (s[i-1] == '1' ) {
+        if (s[i-1] == '1' ) { // router room
             // check if the looked back to room is already covered by prev router
             int e = ((i-(k+1)) < 0) ? 0 : (i-(k+1));
             while (!done && !pq.empty()) {
                 int r = pq.front();
                 // if it's not in range, pop it
-                if (abs(r - e) > k) {
-                    pq.pop();
-                } else { // it is in range, so add that cost
-                    ans[i] = i + ans[r];
+                if (abs(r - e) > k) pq.pop();
+                else {
+                    ans[i] = min(i + ans[r], i + ans[i-(k+1)]);
                     done = true; 
                 }
             }
-            if (!done) 
-            ans[i] = (i-(k+1) < 0) ? i : i + ans[i-(k+1)];
+            if (!done) ans[i] = (i-(k+1) < 0) ? i : i + ans[i-(k+1)];
             pq.push(i);
-        } else {
-            // if this room is in range of a router, no cost
+
+        } else { // not a router room
+            
             while (!done && !pq.empty()) {
                 int r = pq.front();
-                // if it's not in range, pop it
                 if (r+k < i) pq.pop();
                 else {
-                    ans[i] = ans[i-1];
+                    ans[i] = ans[i-1]; // in range of a prev router
                     done = true;
                 }
             }
@@ -68,21 +65,5 @@ int main() {
     for (int i=1; i <= n; i++) cout << ans[i] << " ";
     cout << endl;
 
-    // now pick the router that is earliest and cover to the end
-    // int strlen = s.length();
-    // for (int i=strlen-k-1; i < strlen; i++) {
-    //     if (s[i] == '1') {
-    //         // this is our answer
-    //         cout << ans[i+1] << endl;
-    //         return 0;
-    //     }
-    // }
-    int res = 0;
-    for (int i = 1; i <= n; i++) {
-        // check if we want to take this router, or if there is a later one that is better
-        if (s[i-1] == '1') {
-            
-        }
-    }
-    cout << res << endl;
+    // now how to get answer from this? can i even lol
 }
