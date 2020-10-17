@@ -32,10 +32,14 @@ int main() {
 
         // case 2: don't use the box. In this case you want to
         // make up the size with the best possible way
-        ll case2 = best[i-1] + best[1];
+        ll case2 = 0; //best[i-1] + best[1];
+        for (int l=1, r=i-1; l <= r; l++, r--) {
+            if (best[l] + best[r] > case2) {
+                case2 = best[l] + best[r];
+            }
+        }
 
         best[i] = max(case1, case2);
-
     }
 
     cout << best[n-1] + values[n] << endl;
