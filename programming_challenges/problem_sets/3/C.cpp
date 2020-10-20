@@ -1,10 +1,12 @@
 #include <iostream>
 #include <queue>
+#include <climits>
 
 using namespace std;
+typedef long long ll;
 
 #define MAXN 200000 + 100
-int ans[MAXN];
+ll dp[MAXN];
 queue<int> pq;
 
 int main() {
@@ -13,57 +15,42 @@ int main() {
     cin >> n >> k >> s;
     //cout << n << " " << k << " " << s << endl;
     
-    if (n == 1) { cout << "1\n"; return 0; }
-    if (s.find('1') == string::npos) { cout << (n*(n+1))/2 << "\n"; return 0; }
+    for (int i = 1; i <= n; i++) {
+        // case 1: connect directly
+        ll case1 = dp[i-1] + i;
 
-    // now calculate ans[i] which denotes the cheapest cost up to room i BUT taking every router
-    for (int i=1; i<=n; i++) {
-        
-        bool done = false;
-        if (s[i-1] == '1' ) { // router room
-            // check if the looked back to room is already covered by prev router
-            int e = ((i-(k+1)) < 0) ? 0 : (i-(k+1));
-            while (!done && !pq.empty()) {
-                int r = pq.front();
-                // if it's not in range, pop it
-                if (abs(r - e) > k) pq.pop();
-                else {
-                    ans[i] = min(i + ans[r], i + ans[i-(k+1)]);
-                    done = true; 
-                }
+        // case 2: leech of prev router
+        ll case2 = LLONG_MAX;
+        while (!pq.empty()) {
+            int r = pq.front();
+            if (r+k < i) pq.pop();
+            else {
+                int index = (r-k-1 >= 0) ? (r-k-1) : 0; 
+                case2 = dp[index] + r;
+                break;
             }
-            if (!done) ans[i] = (i-(k+1) < 0) ? i : i + ans[i-(k+1)];
+        }
+
+        // case 3: put router in this room
+        ll case3 = LLONG_MAX;
+        if (s[i-1] == '1') {
+            int index = (i-k-1 >= 0) ? (i-k-1) : 0;
+            case3 = i + dp[index];
+        }
+
+        // min of all 3 cases
+        dp[i] = min(min(case1, case2), case3);
+
+        // push current router if so
+        if (s[i-1] == '1') {
             pq.push(i);
-
-        } else { // not a router room
-            
-            while (!done && !pq.empty()) {
-                int r = pq.front();
-                if (r+k < i) pq.pop();
-                else {
-                    ans[i] = ans[i-1]; // in range of a prev router
-                    done = true;
-                }
+            // check if we need to make a correction
+            int prev = -1;
+            for (int j=i-1; j > 0; j--) { 
+                dp[j] = min(dp[j], dp[i]);
+                if (s[j-1] == '1') break;
             }
-            if (!done) ans[i] = ans[i-1] + i;
         }
     }
-
-    cout << "rout: ";
-    for (int i=0; i < n; i++) {
-        if (ans[i+1] > 9) cout << s[i] << "  ";
-        else cout << s[i] << " ";
-    } 
-    cout << endl;
-    cout << "cost: ";
-    for (int i=0; i < n; i++) {
-        if (ans[i+1] > 9 && i+1 < 10) cout << i+1 << "  ";
-        else cout << i+1 << " ";
-    } 
-    cout << endl;
-    cout << "ansr: ";
-    for (int i=1; i <= n; i++) cout << ans[i] << " ";
-    cout << endl;
-
-    // now how to get answer from this? can i even lol
+    cout << dp[n] << endl;
 }

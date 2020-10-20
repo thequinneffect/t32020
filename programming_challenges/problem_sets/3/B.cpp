@@ -8,7 +8,7 @@ typedef long long ll;
 
 int trees[MAX];
 ll p[MAX][MAX]; // paint costs, (tree, colour)
-ll dp[MAX][MAX][MAX];
+ll dp[MAX][MAX][MAX]; // tree, beauty, colour = cost
 
 int main() {
 
@@ -21,7 +21,7 @@ int main() {
     for (int t=0; t <= n; t++)
         for (int b=0; b <= k; b++)
             for (int c=0; c <= m; c++) 
-                dp[t][b][c] = LLONG_MAX; // dp[tree][beauty][colour]
+                dp[t][b][c] = LLONG_MAX/2; // dp[tree][beauty][colour]
 
     
     // if the first tree (1) is uncoloured then we have m possibilites for 
@@ -32,42 +32,93 @@ int main() {
         dp[1][1][trees[1]] = 0;
     }
 
-    // now we have some starting values, we can do the dp
+    /*
+        So now we either have some paint colour costs at dp[1][1][all colours] or we have a 0 at dp[1][1][prev tree colour]
+        Now imagine I want to do tree 2, what decisions do i have to make?
+        - either tree 2 is coloured or uncoloured
+        - if tree 2 is uncoloured then
+
+            - if the previous tree was initially uncoloured, then we have the bunch of paint scores, and we basically have to
+            do the same thing again (i.e. dp[2][2][colour a] = dp[1][1][colour b] + cost[2, colour a] but colour of this tree
+            and the prev tree cannot be the same because we are assuming the beauty increases here (dp[2][beauty=2])) i.e. colour a != colour b
+            for (int c1 = 1; c1 <= m; c1++) 
+                for (int c2 = 1; c2 <= m; c2++) {
+                    if (c1 == c2) continue;
+                    dp[t][b][c1] = dp[t-1][b-1][c2] + p[t][c1];
+                }                                                                              t  b                 t  b
+            - but we can paint it the same, but we cannot increase the beauty in that case: dp[2][1][trees[1]] = dp[1][1][trees[1]] + cost[2, trees[1]]
+
+            - if the previous tree was already coloured, then we just have a single 0 at dp[1][1][tree[1]], the rest of the c are INF. We can pick
+            any colour for the current tree, but the only useful cases are picking the same as the previous predetermined colour or picking different
+            to it. It doesn't make sense to consider the previous tree being a different colour because we had no choice in it. i.e. 
+            dp[t][b][c] = dp[t-1][b-1][trees[t-1]] 
+
+        - otherwise it is already coloured, in which case 
+
+            - if the previous tree was initially uncoloured, we again have the bunch of paint scores. In this case, it is only going to be a 
+            match with one of those different colours. So for the cases where the current colour differs from the previous colours (m-1 of the
+            cases because it only matches with one of them) we get;
+                dp[t][b][trees[t]] = dp[t-1][b-1][c] where c != trees[t]
+    */
 
     // for each tree
-    for (int t=2; t < n; t++) {
+    for (int t=2; t <= n; t++) {
 
-        // for each possible beauty
-        for (int b=1; b <= k; b++) {
+        // for each possible beauty up to t
+        for (int b=1; b <= t; b++) { // only need to check to t because that's the highest possible beauty we could have
 
-            // if the tree is already coloured
-            if (trees[t] != 0) {
-                // if it is the same colour as prev tree
-                if (trees[t] == dp[t-1][b][trees[t-1]]) {
-                    dp[t][b][trees[t-1]] = dp[t-1][b][trees[t-1]];
-                } else { // it is a different colour to the prev tree
-                    // set the states for all those different colours
-                    for (int c=1; c <= m; c++) {
-                        if (c == trees[t-1]) continue; // skip the same colour
-                        dp[t][b][c] = dp[t-1][b-1][c]; // was already coloured, different colour though, do for all * where * != trees[i-1]
+            
+            if (trees[t] != 0) { // if the tree is already coloured
+               
+                if (trees[t] == trees[t-1]) { // and it is the same colour as prev tree (or use this? dp[t-1][b][trees[t-1]])
+
+                    dp[t][b][trees[t]] = min(dp[t][b][trees[t]], dp[t-1][b][trees[t]]); // then beauty didn't increase, either did cost, only tree count did
+
+                } else { // and is a different colour to the prev tree
+                    
+                    for (int c=1; c <= m; c++) { // set the states for all those different colours
+                        if (c == trees[t]) continue; // skip the same colour
+                        dp[t][b][c] = min(dp[t][b][trees[t]], dp[t-1][b-1][c]); // was already coloured (so no cost to us), different colour though (so need to look at prev beauty) for all c where c != trees[t-1]
                     }
                 }
-            }
 
-            // for each colour
-            for (int c=1; c <= m; c++) {
-                
-                dp[t][b][c] = dp[t-1][b][c] + p[t][trees[t-1]]; // wasn't coloured, coloured same colour
-                //dp[t][b][c] = dp[t-1][b][c]; // was already coloured, same colour too
+            } else { // tree is uncoloured
 
-                dp[t][b][c] = dp[t-1][b-1][*] + p[t][c]; // wasn't coloured, coloured different colour i.e. do for all * where * != c
-                dp[t][b][c] = dp[t-1][b-1][*]; // was already coloured, different colour though, do for all * where * != trees[i-1]
-                
+                if (trees[t-1] != 0) { // and the previous tree was already coloured
+                    for (int c=1; c <= m; c++) {
+                        if (c == trees[t-1]) dp[t][b][c] = min(dp[t][b][c], dp[t-1][b][c] + p[t][c]);
+                        else dp[t][b][c] = min(dp[t][b][c], dp[t-1][b-1][c] + p[t][c]);
+                    }
+                } else { // previous tree was initially uncoloured
+                    for (int c1=1; c1 <= m; c1++) {
+                        for (int c2=1; c2 <= m; c2++) {
+                            if (c1 == c2) continue;
+                            else dp[t][b][c1] = min(dp[t][b][c1], dp[t-1][b-1][c2] + p[t][c1]);
+                        }
+                    }
+                }
 
+                // for (int c1 = 1; c1 <= m; c1++) {
+                //     dp[t][b][c1] = min(dp[t][b][c1], dp[t-1][b][c1] + p[t][c1]); // assume we do try colour it the same, either the prev colour
+                //     // is valid and we get an actual value, or not and we get infinity
+                //     for (int c2 = 1; c2 <= m; c2++) {
+                //         if (c1 == c2) continue; // colours cannot be the same because in this condition we assume the beauty increases
+                //         dp[t][b][c1] = min(dp[t][b][c1], dp[t-1][b-1][c2] + p[t][c1]);
+                //     } 
+                // } 
+            
             }
 
         }
 
     }    
+
+    // only want the best answer for all trees, beaty equals to k, but the ending colour doesn't matter
+    ll res = LLONG_MAX/2;
+    for (int c=1; c <= m; c++) {
+        if (dp[n][k][c] < res) res = dp[n][k][c];
+    }
+    if (res == LLONG_MAX/2) res = -1;
+    cout << res << endl;
 
 }
