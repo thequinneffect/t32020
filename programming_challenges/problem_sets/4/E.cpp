@@ -15,6 +15,7 @@ vector<pair<pii, long long>> output_order;
 map<pii, long long> mst; // the MST found by kruskalls, with the cost of this edge
 set<long long> subset[MAXN];
 map<pii, long long> max_path_weight;
+map<pii, int> edge_exists;
 
 long long root[MAXN];
 long long sz[MAXN];
@@ -49,6 +50,8 @@ int main() {
         output_order.push_back({{f1, f2}, cost});
         graph[f1].push_back(f2);
         graph[f2].push_back(f1);
+        edge_exists[{f1, f2}] = 1;
+        edge_exists[{f2, f1}] = 1;
     }   
 
     // init DSU and subsets
@@ -88,7 +91,7 @@ int main() {
         // iterate over the nodes of the smaller subset, see if their neighbours are part of the larger subset
         for (auto node : ssub) {
             for (auto neighbour : graph[node]) {
-                if (lsub.find(neighbour) != lsub.end()) {
+                if (edge_exists[{node, neighbour}]) {
                     // neighbour is in larger subset, so this is maximum edge among path of these two nodes
                     long long small, big;
                     if (node < neighbour) {
