@@ -89,15 +89,15 @@ int main() {
         //printf("larger subset contains:\n");
         //for (auto n : lsub) printf("node %lld\n", n);
         // iterate over the nodes of the smaller subset, see if their neighbours are part of the larger subset
-        for (auto node : ssub) {
-            for (auto neighbour : graph[node]) {
-                if (edge_exists[{node, neighbour}]) {
+        for (auto snode : ssub) {
+            for (auto lnode : lsub) {
+                if (edge_exists[{snode, lnode}]) {
                     // neighbour is in larger subset, so this is maximum edge among path of these two nodes
                     long long small, big;
-                    if (node < neighbour) {
-                        small = node; big = neighbour;
+                    if (snode < lnode) {
+                        small = snode; big = lnode;
                     } else {
-                        small = neighbour; big = node;
+                        small = lnode; big = snode;
                     }
 
                     if (max_path_weight[{small, big}] != 0) continue;
