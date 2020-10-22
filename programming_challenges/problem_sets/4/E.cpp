@@ -7,24 +7,24 @@
 using namespace std;
 
 #define MAXN 200000 + 5
-typedef pair<int, int> pii;
+typedef pair<long long, long long> pii;
 
-vector<int> graph[MAXN];
-multimap<int, pii> edge_mins;
-vector<pair<pii, int>> output_order;
-map<pii, int> mst; // the MST found by kruskalls, with the cost of this edge
-set<int> subset[MAXN];
-map<pii, int> max_path_weight;
+vector<long long> graph[MAXN];
+multimap<long long, pii> edge_mins;
+vector<pair<pii, long long>> output_order;
+map<pii, long long> mst; // the MST found by kruskalls, with the cost of this edge
+set<long long> subset[MAXN];
+map<pii, long long> max_path_weight;
 
-int root[MAXN];
-int sz[MAXN];
+long long root[MAXN];
+long long sz[MAXN];
 
-int get_rep(int i) {
+long long get_rep(long long i) {
     if (root[i] == i) return i;
     return root[i] = get_rep(root[i]);
 }
 
-int merge(int x, int y) {
+long long merge(long long x, long long y) {
     x = get_rep(x);
     y = get_rep(y);
     if (x == y) return 0;
@@ -39,11 +39,11 @@ int merge(int x, int y) {
 
 int main() {
 
-    int n, m;
+    long long n, m;
     cin >> n >> m;
 
-    for (int i=0; i < m; i++) {
-        int f1, f2, cost;
+    for (long long i=0; i < m; i++) {
+        long long f1, f2, cost;
         cin >> f1 >> f2 >> cost;
         edge_mins.insert({cost, {f1, f2}});
         output_order.push_back({{f1, f2}, cost});
@@ -52,21 +52,21 @@ int main() {
     }   
 
     // init DSU and subsets
-    for (int i=1; i <= n; i++) {
+    for (long long i=1; i <= n; i++) {
         root[i] = i;
         sz[i] = 1;
         subset[i].insert(i);
     }
 
-    int total_cost = 0, edges_done = 0, mst_rep = -1;
-    for (multimap<int, pii>::iterator it = edge_mins.begin(); it != edge_mins.end(); it++) {
+    long long total_cost = 0, edges_done = 0, mst_rep = -1;
+    for (multimap<long long, pii>::iterator it = edge_mins.begin(); it != edge_mins.end(); it++) {
 
         if (get_rep(it->second.first) == get_rep(it->second.second)) continue; // can't merge within same set
 
         // add max path weights for all pairs a,b from the different subsets
-        int n1 = it->second.first, n2 = it->second.second, edge_weight = it->first;
-        int s, l;
-        set<int> ssub, lsub;
+        long long n1 = it->second.first, n2 = it->second.second, edge_weight = it->first;
+        long long s, l;
+        set<long long> ssub, lsub;
         if (sz[get_rep(n1)] < sz[get_rep(n2)]) {
             // n1 is part of the smaller subset
             ssub = subset[get_rep(n1)];
@@ -85,7 +85,7 @@ int main() {
             for (auto neighbour : graph[node]) {
                 if (lsub.find(neighbour) != lsub.end()) {
                     // neighbour is in larger subset, so this is maximum edge among path of these two nodes
-                    int small, big;
+                    long long small, big;
                     (node < neighbour)? max_path_weight[{node, neighbour}] = edge_weight : max_path_weight[{neighbour, node}] = edge_weight;
                 }
             }
@@ -110,16 +110,16 @@ int main() {
     // MST is now constructed, do queries
     for (auto e : output_order) {
         // check if the edge is already part of the mst
-        if (mst.find(e.first) != mst.end()) printf("%d\n", total_cost);
+        if (mst.find(e.first) != mst.end()) printf("%lld\n", total_cost);
         else {
             // need to remove cost of maximum edge and add cost of new edge
-            int s, l;
+            long long s, l;
             if (e.first.first < e.first.second) {
                 s = e.first.first; l = e.first.second;
             } else {
                 l = e.first.first; s = e.first.second;
             }
-            printf("%d\n", total_cost + e.second - max_path_weight[{s, l}]);
+            printf("%lld\n", total_cost + e.second - max_path_weight[{s, l}]);
         }
     }
 }
@@ -129,11 +129,11 @@ int main() {
     - start by doing kruskals algorithm to get the actual MST
 
     - then for each of the 200,000 queries (edges), check if the current edge is in the actual MST
-    - if it is then print the cost of the MST
+    - if it is then prlong long the cost of the MST
     - if it isn't, then we need to swap out 1 of the edges with the new edge. The edge we swap out must
     be the maximal cost edge that we can remove whilst still having a spanning tree when we add the 
     new edge in. This is equivalent to the maximum cost edge along the path from v to u (where v and u
-    are the endpoints of the new edge to be added). 
+    are the endpolong longs of the new edge to be added). 
 
     How to find the maximum cost edge on path(u, v)? When we do Kruskals, the most recently added
     edge is the largest cost edge added so far (because we sort in increasing order of edge weight).
