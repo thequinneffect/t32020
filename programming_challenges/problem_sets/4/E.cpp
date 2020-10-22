@@ -62,6 +62,7 @@ int main() {
     for (multimap<long long, pii>::iterator it = edge_mins.begin(); it != edge_mins.end(); it++) {
 
         if (get_rep(it->second.first) == get_rep(it->second.second)) continue; // can't merge within same set
+        //printf("adding edge %lld -> %lld to the MST\n", it->second.first, it->second.second);
 
         // add max path weights for all pairs a,b from the different subsets
         long long n1 = it->second.first, n2 = it->second.second, edge_weight = it->first;
@@ -80,6 +81,10 @@ int main() {
             s = n2;
             l = n1;
         }
+        //printf("smaller subset contains:\n");
+        //for (auto n : ssub) printf("node %lld\n", n);
+        //printf("larger subset contains:\n");
+        //for (auto n : lsub) printf("node %lld\n", n);
         // iterate over the nodes of the smaller subset, see if their neighbours are part of the larger subset
         for (auto node : ssub) {
             for (auto neighbour : graph[node]) {
@@ -103,9 +108,21 @@ int main() {
 
         // update the subsets
         if (mst_rep == s) {
-            for (auto n : lsub) subset[s].insert(n);
+            //printf("combined set has representative %lld\n", get_rep(s));
+            for (auto n : lsub) {
+                //printf("-adding %lld to combined set\n", n);
+                subset[get_rep(s)].insert(n);
+            }
+            //printf("combined subset contains:\n");
+            //for (auto n : subset[get_rep(s)]) printf("node %lld\n", n);
         } else {
-            for (auto n : ssub) subset[l].insert(n);
+            //printf("combined set has representative %lld\n", get_rep(l));
+            for (auto n : ssub) {
+                //printf("-adding %lld to combined set\n", n);
+                subset[get_rep(l)].insert(n);
+            }
+            //printf("combined subset contains:\n");
+            //for (auto n : subset[get_rep(l)]) printf("node %lld\n", n);
         }
 
         edges_done++;
@@ -126,6 +143,7 @@ int main() {
             } else {
                 l = e.first.first; s = e.first.second;
             }
+            //printf("total cost: %lld, adding new edge: %lld, removing old max path edge(%lld, %lld): %lld\n", total_cost, e.second, s, l, max_path_weight[{s, l}]);
             printf("%lld\n", total_cost + e.second - max_path_weight[{s, l}]);
         }
     }
