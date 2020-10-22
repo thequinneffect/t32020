@@ -113,6 +113,7 @@ int main() {
                 //printf("-adding %lld to combined set\n", n);
                 subset[get_rep(s)].push_back(n);
             }
+            lsub.clear();
             //printf("combined subset contains:\n");
             //for (auto n : subset[get_rep(s)]) printf("node %lld\n", n);
         } else {
@@ -121,6 +122,7 @@ int main() {
                 //printf("-adding %lld to combined set\n", n);
                 subset[get_rep(l)].push_back(n);
             }
+            ssub.clear();
             //printf("combined subset contains:\n");
             //for (auto n : subset[get_rep(l)]) printf("node %lld\n", n);
         }
