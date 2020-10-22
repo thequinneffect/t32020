@@ -86,7 +86,14 @@ int main() {
                 if (lsub.find(neighbour) != lsub.end()) {
                     // neighbour is in larger subset, so this is maximum edge among path of these two nodes
                     long long small, big;
-                    (node < neighbour)? max_path_weight[{node, neighbour}] = edge_weight : max_path_weight[{neighbour, node}] = edge_weight;
+                    if (node < neighbour) {
+                        small = node; big = neighbour;
+                    } else {
+                        small = neighbour; big = node;
+                    }
+
+                    if (max_path_weight[{small, big}] != 0) continue;
+                    max_path_weight[{small, big}] = edge_weight;
                 }
             }
         }
