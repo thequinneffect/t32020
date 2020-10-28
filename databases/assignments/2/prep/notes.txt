@@ -1,0 +1,9 @@
+Things i've learned {
+	- you need to include , in the select attribute list i.e. it's select name, addr from bars NOT select name addr from bars
+
+}
+
+Db {
+	- with brewers as an attribute, use beer4 db. This is created from beer2.dump file. This one has the peanut butter beer entry fixed.
+	- with brewers as a separate table, use ...
+}
