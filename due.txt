@@ -1,5 +1,5 @@
 today: 
-friday: lecture summaries, db quiz
+friday: db quiz
 sat: 
 sun: db assignment
 mon: problem set 4 (6pm)
