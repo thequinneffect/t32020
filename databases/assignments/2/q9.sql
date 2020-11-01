@@ -5,8 +5,9 @@ declare
     _expr text;
     _code text;
     _rec acobjrecord;
-    _get_og_codes text;
+    dyn_qry text;
 begin
+    _rec.objtype = aog.gtype; -- should be able to be set just once
     if (aog.gdefby = 'pattern') then 
         -- retrieve all codes from the pattern
         for _expr in
@@ -15,23 +16,63 @@ begin
         loop 
 
             raise info 'regexp: %', _expr;
-            _expr := regexp_replace(_expr, '#', '.');
-            raise info 'altered regexp %', _expr;
-
-            _get_og_codes := E'
-                select ao.code
-                from ' || quote_ident(aog.gtype || 's') || ' as ao
-                where ao.code ~ ' || quote_literal(_expr);
-
-            for _code in execute _get_og_codes
-            loop
-                _rec.objcode = _code;
+            -- if it's already a good code, add it
+            if (_expr ~ '^[a-zA-Z0-9]*$') then 
+                raise info 'found good code: %', _expr;
+                _rec.objcode = _expr;
                 _rec.objtype = aog.gtype;
-            end loop;
+                return next _rec;
+            else 
+
+                -- either have a {} list or a regex
+                if (_expr like '{%}') then 
+                    _expr := translate(_expr, '{}', '');
+                    raise info '{} list contained %', _expr;
+                    for _code in 
+                        select * 
+                        from regexp_split_to_table(_expr, ';')
+                    loop
+                        _rec.objcode = _code;
+                        _rec.objtype = aog.gtype;
+                        return next _rec;
+                    end loop;
+                else 
+                    -- else search relevant aog table for matches
+                    _expr := replace(_expr, '#', '.');
+                    raise info 'altered regexp %', _expr;
+
+                    dyn_qry := E'
+                        select ao.code
+                        from ' || quote_ident(aog.gtype || 's') || ' as ao
+                        where ao.code ~ ' || quote_literal(_expr);
+
+                    for _code in execute dyn_qry
+                    loop
+                        raise info 'found % | %', aog.gtype, _code;
+                        _rec.objcode = _code;
+                        _rec.objtype = aog.gtype;
+                        return next _rec;
+                    end loop;
+                end if;
+            end if;
         end loop;
     else -- enumerated
         -- retrieve all codes from the grouping
-        raise exception 'TODO: implement enumerated type logic!';
+        raise info 'Enumeration!';
+
+        dyn_qry := '
+            select ao.code 
+            from ' || quote_ident(aog.gtype || '_group_members') || ' m
+            join ' || quote_ident(aog.gtype || 's') || ' ao   
+                on (ao.id = m.' || quote_ident(aog.gtype) || ')
+            where m.ao_group = ' || quote_literal(aog.id);
+
+        for _code in execute dyn_qry
+        loop 
+            _rec.objcode = _code;
+            return next _rec;
+        end loop;
+
     end if; 
 end;
 $$ language plpgsql;
@@ -93,3 +134,8 @@ begin
     
 end;
 $$ language plpgsql;
+
+/* I'm aware I could have refactored out the group type from 
+the get_recs() function because it is the same for all recs. I
+pretty much finished coding up the solution though and it's
+a lot of effort to change it for not much gain haha.  */
