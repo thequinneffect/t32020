@@ -5,7 +5,7 @@ declare
     _code text;
 begin 
     for _code in
-    select s.code
+    select distinct s.code
     from acad_object_groups aog
         join rules r on (r.ao_group = aog.id)
         join subject_prereqs sp on (sp.rule = r.id)

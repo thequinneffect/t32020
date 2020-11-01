@@ -14,4 +14,4 @@ from facs_comms fc
 where fc.num >= (
     select max(num) 
     from facs_comms
-)
+);

@@ -86,7 +86,7 @@ $$ language plpgsql;
  */
 
 create or replace function
-   Q9(gid integer) returns setof AcObjRecord
+   get_groups(gid integer) returns setof AcObjRecord
 as $$
 declare
     _name text;
@@ -98,14 +98,14 @@ begin
     -- try retrieve parent of group
     select *
     from acad_object_groups g
-    where g.id = Q9.gid
+    where g.id = get_groups.gid
         and g.negated != true 
         and g.gdefby != 'query'
     into _parent;
 
     -- check if parent was found, except if not
     if (not found) then 
-        raise exception 'No such group %', Q9.gid;
+        raise exception 'No such group %', get_groups.gid;
     end if;
 
     -- parent found, include it in result set
@@ -132,6 +132,16 @@ begin
         end loop;
     end loop;
     
+end;
+$$ language plpgsql;
+
+create or replace function
+   Q9(gid integer) returns setof AcObjRecord
+as $$
+begin
+    return query 
+    select distinct *
+    from get_groups(gid) recs;
 end;
 $$ language plpgsql;
 

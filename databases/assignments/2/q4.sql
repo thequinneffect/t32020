@@ -27,7 +27,7 @@ from rolecall('3978', 'Sem2 2005');
 create or replace view Q4b(id,name)
 as
 select *
-from rolecall('3778', 'Sem1 2017');
+from rolecall('3778', '2017 S1');
 
 
 /* OLD IMPLEMENTATION

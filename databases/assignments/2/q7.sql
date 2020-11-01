@@ -1,6 +1,6 @@
 create or replace view convenors_and_courses 
 as
-select p.name as name, su.code as code, termname(c.term) as term
+select p.name as name, su.code as subject, termname(c.term) as term
 from course_staff s
 join people p on (p.id = s.staff)
 join staff_roles r on (r.id = s.role)
@@ -12,7 +12,7 @@ create or replace function
    Q7(subject text)
      returns table (subject text, term text, convenor text)
 as $$
-    select c.code::text, c.term, c.name
+    select c.subject::text, c.term, c.name
     from convenors_and_courses c
     where c.subject = $1;
 $$ language sql;
