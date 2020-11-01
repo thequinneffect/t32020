@@ -1,17 +1,19 @@
 create or replace function
-   Q10(code text) returns setof text
+    Q10(code text) returns setof text
 as $$
 declare
     _code text;
 begin 
+    -- search for the supplied course code in the pattern 
+    -- for other courses lists of prereqs
     for _code in
-    select distinct s.code
-    from acad_object_groups aog
-        join rules r on (r.ao_group = aog.id)
-        join subject_prereqs sp on (sp.rule = r.id)
-        join subjects s on (s.id = sp.subject)
-    where aog.gdefby = 'pattern' 
-        and aog.definition like ('%' || Q10.code || '%')
+        select distinct s.code
+        from acad_object_groups aog
+            join rules r on (r.ao_group = aog.id)
+            join subject_prereqs sp on (sp.rule = r.id)
+            join subjects s on (s.id = sp.subject)
+        where aog.gdefby = 'pattern' 
+            and aog.definition like ('%' || Q10.code || '%')
     loop
         return next _code;
     end loop;

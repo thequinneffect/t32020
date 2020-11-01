@@ -1,18 +1,18 @@
 create type RoleEntry as (prog text, term text);
 
 create or replace function
-   rolecall(prog text, term text) returns setof RoleEntry
+    rolecall(prog text, term text) returns setof RoleEntry
 as $$
 declare
     _entry RoleEntry;
 begin
     for _entry in
-    select distinct(p.unswid), p.name
-    from people p 
-    join program_enrolments e on (e.student = p.id)
-    join programs prog on (prog.id = e.program)
-    join terms t on (t.id = e.term)
-    where prog.code = rolecall.prog and t.name = rolecall.term
+        select distinct(p.unswid), p.name
+            from people p 
+                join program_enrolments e on (e.student = p.id)
+                join programs prog on (prog.id = e.program)
+                join terms t on (t.id = e.term)
+            where prog.code = rolecall.prog and t.name = rolecall.term
     loop 
         return next _entry;
     end loop; 
@@ -22,33 +22,32 @@ $$ language plpgsql;
 create or replace view Q4a(id,name)
 as
 select *
-from rolecall('3978', 'Sem2 2005');
+    from rolecall('3978', 'Sem2 2005');
 
 create or replace view Q4b(id,name)
 as
 select *
-from rolecall('3778', '2017 S1');
+    from rolecall('3778', '2017 S1');
 
 
 /* OLD IMPLEMENTATION
 create or replace view Q4a(id,name)
 as
 select distinct(p.unswid), p.name
-from people p 
-join program_enrolments e on (e.student = p.id)
-join programs prog on (prog.id = e.program)
-join terms t on (t.id = e.term)
-where prog.code = '3978' and t.name = 'Sem2 2005';
+    from people p 
+        join program_enrolments e on (e.student = p.id)
+        join programs prog on (prog.id = e.program)
+        join terms t on (t.id = e.term)
+    where prog.code = '3978' and t.name = 'Sem2 2005';
 
 create or replace view Q4b(id,name)
 as
 select distinct(p.unswid), p.name
-from people p 
-join program_enrolments e on (e.student = p.id)
-join programs prog on (prog.id = e.program)
-join terms t on (t.id = e.term)
-where prog.code = '3978' and t.name = 'Sem2 2005';
-;
+    from people p 
+        join program_enrolments e on (e.student = p.id)
+        join programs prog on (prog.id = e.program)
+        join terms t on (t.id = e.term)
+    where prog.code = '3978' and t.name = 'Sem2 2005';
 */
 
 /* For the mymy1 database instance ... Define SQL view Q4a(id,name) which 
