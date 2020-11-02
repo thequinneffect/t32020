@@ -16,6 +16,7 @@ map<pii, long long> mst; // the MST found by kruskalls, with the cost of this ed
 set<long long> subset[MAXN];
 map<pii, long long> max_path_weight;
 vector<long long> neighbours[MAXN];
+map<pii, bool> seen;
 
 long long root[MAXN];
 long long sz[MAXN];
@@ -46,6 +47,11 @@ int main() {
     for (long long i=0; i < m; i++) {
         long long f1, f2, cost;
         cin >> f1 >> f2 >> cost;
+        if (seen[{f1, f2}] == true || seen[{f2, f1}] == true) {
+            printf("there are multiple edges!!!\n");
+            return 0;
+        }
+        seen[{f1, f2}] = true; seen[{f2, f1}] = true;
         edge_mins.insert({cost, {f1, f2}});
         output_order.push_back({{f1, f2}, cost});
         neighbours[f1].push_back(f2);
