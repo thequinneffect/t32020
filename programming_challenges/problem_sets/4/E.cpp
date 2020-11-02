@@ -12,9 +12,9 @@ typedef pair<long long, long long> pii;
 multimap<long long, pii> edge_mins;
 vector<pair<pii, long long>> output_order;
 map<pii, long long> mst; // the MST found by kruskalls, with the cost of this edge
-vector<long long> subset[MAXN];
+set<long long> subset[MAXN];
 map<pii, long long> max_path_weight;
-map<pii, int> edge_exists;
+vector<int> neighbours[MAXN];
 
 long long root[MAXN];
 long long sz[MAXN];
@@ -47,15 +47,15 @@ int main() {
         cin >> f1 >> f2 >> cost;
         edge_mins.insert({cost, {f1, f2}});
         output_order.push_back({{f1, f2}, cost});
-        edge_exists[{f1, f2}] = 1;
-        edge_exists[{f2, f1}] = 1;
+        neighbours[f1].push_back(f2);
+        neighbours[f2].push_back(f1);
     }   
 
     // init DSU and subsets
     for (long long i=1; i <= n; i++) {
         root[i] = i;
         sz[i] = 1;
-        subset[i].push_back(i);
+        subset[i].insert(i);
     }
 
     long long total_cost = 0, edges_done = 0, mst_rep = -1;
@@ -67,7 +67,7 @@ int main() {
         // add max path weights for all pairs a,b from the different subsets
         long long n1 = it->second.first, n2 = it->second.second, edge_weight = it->first;
         long long s, l;
-        vector<long long> ssub, lsub;
+        set<long long> ssub, lsub;
         if (sz[get_rep(n1)] < sz[get_rep(n2)]) {
             // n1 is part of the smaller subset
             ssub = subset[get_rep(n1)];
@@ -86,19 +86,11 @@ int main() {
         //printf("larger subset contains:\n");
         //for (auto n : lsub) printf("node %lld\n", n);
         // iterate over the nodes of the smaller subset, see if their neighbours are part of the larger subset
-        for (auto snode : ssub) {
-            for (auto lnode : lsub) {
-                if (edge_exists[{snode, lnode}]) {
-                    // neighbour is in larger subset, so this is maximum edge among path of these two nodes
-                    long long small, big;
-                    if (snode < lnode) {
-                        small = snode; big = lnode;
-                    } else {
-                        small = lnode; big = snode;
-                    }
-
-                    if (max_path_weight[{small, big}] != 0) continue;
-                    max_path_weight[{small, big}] = edge_weight;
+        for (auto n1 : ssub) {
+            for (auto n2 : neighbours[n1]) {
+                if (lsub.find(n2) != lsub.end()) {
+                    if (max_path_weight[{n1, n2}] != 0) continue;
+                    max_path_weight[{n1, n2}] = max_path_weight[{n2, n1}] = edge_weight;
                 }
             }
         }
@@ -111,7 +103,7 @@ int main() {
             //printf("combined set has representative %lld\n", get_rep(s));
             for (auto n : lsub) {
                 //printf("-adding %lld to combined set\n", n);
-                subset[get_rep(s)].push_back(n);
+                subset[get_rep(s)].insert(n);
             }
             lsub.clear();
             //printf("combined subset contains:\n");
@@ -120,7 +112,7 @@ int main() {
             //printf("combined set has representative %lld\n", get_rep(l));
             for (auto n : ssub) {
                 //printf("-adding %lld to combined set\n", n);
-                subset[get_rep(l)].push_back(n);
+                subset[get_rep(l)].insert(n);
             }
             ssub.clear();
             //printf("combined subset contains:\n");
@@ -139,34 +131,8 @@ int main() {
         if (mst.find(e.first) != mst.end()) printf("%lld\n", total_cost);
         else {
             // need to remove cost of maximum edge and add cost of new edge
-            long long s, l;
-            if (e.first.first < e.first.second) {
-                s = e.first.first; l = e.first.second;
-            } else {
-                l = e.first.first; s = e.first.second;
-            }
             //printf("total cost: %lld, adding new edge: %lld, removing old max path edge(%lld, %lld): %lld\n", total_cost, e.second, s, l, max_path_weight[{s, l}]);
-            printf("%lld\n", total_cost + e.second - max_path_weight[{s, l}]);
+            printf("%lld\n", total_cost + e.second - max_path_weight[{e.first.first, e.first.second}]);
         }
     }
 }
-
-/* 
-
-    - start by doing kruskals algorithm to get the actual MST
-
-    - then for each of the 200,000 queries (edges), check if the current edge is in the actual MST
-    - if it is then prlong long the cost of the MST
-    - if it isn't, then we need to swap out 1 of the edges with the new edge. The edge we swap out must
-    be the maximal cost edge that we can remove whilst still having a spanning tree when we add the 
-    new edge in. This is equivalent to the maximum cost edge along the path from v to u (where v and u
-    are the endpolong longs of the new edge to be added). 
-
-    How to find the maximum cost edge on path(u, v)? When we do Kruskals, the most recently added
-    edge is the largest cost edge added so far (because we sort in increasing order of edge weight).
-    This means that when we merge two subsets in the DSU, the edge they are being merged on is
-    the largest edge used so far, and hence it is the largest edge on the path between any two nodes
-    that are each in a different one of these subsets (i.e. node1 is from subset x, node2 from subset y).
-
-*/
-
