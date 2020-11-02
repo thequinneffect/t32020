@@ -18,8 +18,10 @@ begin
             select * 
                 from regexp_split_to_table(aog.definition, ',')
         loop 
+            if (_expr like '%FREE%' or _expr like '%GEN%' or _expr like '%F=%') then
+                continue;
             -- if it's already a good code, add it
-            if (_expr ~ '^[a-zA-Z0-9]*$') then 
+            elsif (_expr ~ '^[a-zA-Z0-9]*$') then 
                 _rec.objcode = _expr;
                 return next _rec;
             else 

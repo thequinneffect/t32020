@@ -8,7 +8,7 @@ necessary. */
 
 -- Q1: students who've studied many courses
 
-create view Q1(unswid,name)
+create or replace view Q1(unswid,name)
 as
 select p.unswid, p.name
     from people p
@@ -67,12 +67,13 @@ select *
 
 -- Q4: Comp Sci students in 05s2 and 17s1
 
-/* I decided to implment a function because I noticed they queries
+/* I decided to implment a function because I noticed the queries
 for mymy1 and mymy2 would be the same (except for the parameters) and
 views cannot be parameterised. Functions like below are analogous to
 parameterised views. Just in case we weren't supposed to use a function
-here, i've included commented out view only versions. */
+here, i've also done view only versions. */
 
+/*
 create type RoleEntry as (prog text, term text);
 
 create or replace function
@@ -103,8 +104,8 @@ create or replace view Q4b(id,name)
 as
 select *
     from rolecall('3778', '2017 S1');
+*/
 
-/* VIEW-ONLY IMPLEMENTATION
 create or replace view Q4a(id,name)
 as
 select distinct(p.unswid), p.name
@@ -122,7 +123,6 @@ select distinct(p.unswid), p.name
         join programs prog on (prog.id = e.program)
         join terms t on (t.id = e.term)
     where prog.code = '3778' and t.name = '2017 S1';
-*/
 
 -- Q5: most "committee"d faculty
 
@@ -231,15 +231,27 @@ begin
         ) into uocMatters;
         
         if (markMatters) then -- see if mark matters, if it does uoc also does
-            uocAttempted := uocAttempted + rec.uoc;
-            uocPassed := uocPassed + rec.uoc;
-            weightedSumOfMarks := weightedSumOfMarks + (rec.mark::float * rec.uoc);
-        elsif (uocMatters) then -- see if at least uoc matters
-            uocPassed := uocPassed + rec.uoc;
+            if (rec.uoc is not null) then 
+                uocPassed := uocPassed + rec.uoc;
+            end if;
+            -- it shouldn't be null in this case, but just in case
+            if (rec.mark is not null and rec.uoc is not null) then 
+                weightedSumOfMarks := weightedSumOfMarks + (rec.mark::float * rec.uoc);
+                uocAttempted := uocAttempted + rec.uoc;
+            end if;
+        elsif (uocMatters) then
+            if (rec.uoc is not null) then 
+                uocPassed := uocPassed + rec.uoc;
+            end if;
         else -- failed
-            uocAttempted := uocAttempted + rec.uoc; -- failed uoc is still attempted
-            -- mark also still counts for wam
-            weightedSumOfMarks := weightedSumOfMarks + (rec.mark::float * rec.uoc);
+            if (rec.uoc is not null and rec.mark is not null) then
+                uocAttempted := uocAttempted + rec.uoc; -- failed uoc is still attempted
+            end if;
+            -- but mark still counts for wam
+            if (rec.mark is not null and rec.uoc is not null) then
+                weightedSumOfMarks := weightedSumOfMarks + (rec.mark::float * rec.uoc);
+            end if;
+            -- don't display UOC if they failed
             rec.uoc := null;
         end if;
 
@@ -283,8 +295,10 @@ begin
             select * 
                 from regexp_split_to_table(aog.definition, ',')
         loop 
+            if (_expr like '%FREE%' or _expr like '%GEN%' or _expr like '%F=%') then
+                continue;
             -- if it's already a good code, add it
-            if (_expr ~ '^[a-zA-Z0-9]*$') then 
+            elsif (_expr ~ '^[a-zA-Z0-9]*$') then 
                 _rec.objcode = _expr;
                 return next _rec;
             else 

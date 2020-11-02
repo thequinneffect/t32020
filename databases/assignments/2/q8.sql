@@ -51,15 +51,27 @@ begin
         ) into uocMatters;
         
         if (markMatters) then -- see if mark matters, if it does uoc also does
-            uocAttempted := uocAttempted + rec.uoc;
-            uocPassed := uocPassed + rec.uoc;
-            weightedSumOfMarks := weightedSumOfMarks + (rec.mark::float * rec.uoc);
-        elsif (uocMatters) then -- see if at least uoc matters
-            uocPassed := uocPassed + rec.uoc;
+            if (rec.uoc is not null) then 
+                uocPassed := uocPassed + rec.uoc;
+            end if;
+            -- it shouldn't be null in this case, but just in case
+            if (rec.mark is not null and rec.uoc is not null) then 
+                weightedSumOfMarks := weightedSumOfMarks + (rec.mark::float * rec.uoc);
+                uocAttempted := uocAttempted + rec.uoc;
+            end if;
+        elsif (uocMatters) then
+            if (rec.uoc is not null) then 
+                uocPassed := uocPassed + rec.uoc;
+            end if;
         else -- failed
-            uocAttempted := uocAttempted + rec.uoc; -- failed uoc is still attempted
-            -- mark also still counts for wam
-            weightedSumOfMarks := weightedSumOfMarks + (rec.mark::float * rec.uoc);
+            if (rec.uoc is not null and rec.mark is not null) then
+                uocAttempted := uocAttempted + rec.uoc; -- failed uoc is still attempted
+            end if;
+            -- but mark still counts for wam
+            if (rec.mark is not null and rec.uoc is not null) then
+                weightedSumOfMarks := weightedSumOfMarks + (rec.mark::float * rec.uoc);
+            end if;
+            -- don't display UOC if they failed
             rec.uoc := null;
         end if;
 
