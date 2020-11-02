@@ -125,7 +125,10 @@ int main() {
         else {
             // need to remove cost of maximum edge and add cost of new edge
             //printf("total cost: %lld, adding new edge: %lld, removing old max path edge(%lld, %lld): %lld\n", total_cost, e.second, e.first.first, e.first.second, max_path_weight[{e.first.first, e.first.second}]);
-            printf("%lld\n", total_cost - max_path_weight[{e.first.first, e.first.second}] + e.second);
+            long long ans = total_cost;
+            ans -= max_path_weight[{e.first.first, e.first.second}];
+            ans += e.second;
+            printf("%lld\n", ans);
         }
     }
 }
