@@ -13,7 +13,7 @@ typedef pair<long long, long long> pii;
 multimap<long long, pii> edge_mins;
 vector<pair<pii, long long>> output_order;
 map<pii, long long> mst; // the MST found by kruskalls, with the cost of this edge
-map<long long, long long> subset[MAXN];
+set<long long> subset[MAXN];
 map<pii, long long> max_path_weight;
 vector<long long> neighbours[MAXN];
 
@@ -56,7 +56,7 @@ int main() {
     for (long long i=1; i <= n; i++) {
         root[i] = i;
         sz[i] = 1;
-        subset[i][i] = 1;
+        subset[i].insert(i);
     }
 
     long long total_cost = 0, edges_done = 0, mst_rep = -1;
@@ -70,16 +70,15 @@ int main() {
         long long s, l;
         if (sz[get_rep(n1)] < sz[get_rep(n2)]) { s = n1; l = n2; } 
         else { s = n2; l = n1; }
-        map<long long, long long> &ssub = subset[get_rep(s)], &lsub = subset[get_rep(l)];;
+        set<long long> &ssub = subset[get_rep(s)], &lsub = subset[get_rep(l)];;
         //printf("smaller subset contains:\n");
         //for (auto n : ssub) printf("node %lld\n", n);
         //printf("larger subset contains:\n");
         //for (auto n : lsub) printf("node %lld\n", n);
         // iterate over the nodes of the smaller subset, see if their neighbours are part of the larger subset
-        for (auto kv : ssub) {
-            auto n1 = kv.first;
+        for (auto n1 : ssub) {
             for (auto n2 : neighbours[n1]) {
-                if (lsub[n2] == 1) {
+                if (lsub.find(n2) != lsub.end()) {
                     if (max_path_weight[{n1, n2}] != 0) continue;
                     //printf("max weight path (%lld)->(%lld) = %lld added.\n", n1, n2, edge_weight);
                     max_path_weight[{n1, n2}] = edge_weight;
@@ -97,7 +96,7 @@ int main() {
             //printf("combined set has representative %lld\n", get_rep(s));
             for (auto n : lsub) {
                 //printf("-adding %lld to combined set\n", n);
-                ssub[n.first] = 1;
+                ssub.insert(n);
             }
             //printf("combined subset contains:\n");
             //for (auto n : subset[get_rep(s)]) printf("node %lld\n", n);
@@ -105,7 +104,7 @@ int main() {
             //printf("combined set has representative %lld\n", get_rep(l));
             for (auto n : ssub) {
                 //printf("-adding %lld to combined set\n", n);
-                lsub[n.first] = 1;
+                lsub.insert(n);
             }
             //printf("combined subset contains:\n");
             //for (auto n : subset[get_rep(l)]) printf("node %lld\n", n);
