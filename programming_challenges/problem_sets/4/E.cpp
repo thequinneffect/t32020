@@ -3,6 +3,7 @@
 #include <map>
 #include <set>
 #include <vector>
+#include <algorithm>
 
 using namespace std;
 
@@ -12,9 +13,9 @@ typedef pair<long long, long long> pii;
 multimap<long long, pii> edge_mins;
 vector<pair<pii, long long>> output_order;
 map<pii, long long> mst; // the MST found by kruskalls, with the cost of this edge
-set<long long> subset[MAXN];
+vector<long long> subset[MAXN];
 map<pii, long long> max_path_weight;
-vector<int> neighbours[MAXN];
+vector<long long> neighbours[MAXN];
 
 long long root[MAXN];
 long long sz[MAXN];
@@ -55,32 +56,21 @@ int main() {
     for (long long i=1; i <= n; i++) {
         root[i] = i;
         sz[i] = 1;
-        subset[i].insert(i);
+        subset[i].push_back(i);
     }
 
     long long total_cost = 0, edges_done = 0, mst_rep = -1;
     for (multimap<long long, pii>::iterator it = edge_mins.begin(); it != edge_mins.end(); it++) {
 
         if (get_rep(it->second.first) == get_rep(it->second.second)) continue; // can't merge within same set
-        //printf("adding edge %lld -> %lld to the MST\n", it->second.first, it->second.second);
+        //printf("adding edge %lld -> %lld of cost %lld to the MST\n", it->second.first, it->second.second, it->first);
 
         // add max path weights for all pairs a,b from the different subsets
         long long n1 = it->second.first, n2 = it->second.second, edge_weight = it->first;
         long long s, l;
-        set<long long> ssub, lsub;
-        if (sz[get_rep(n1)] < sz[get_rep(n2)]) {
-            // n1 is part of the smaller subset
-            ssub = subset[get_rep(n1)];
-            lsub = subset[get_rep(n2)];
-            s = n1;
-            l = n2;
-        } else {
-            // n2 is part of the smaller subset
-            ssub = subset[get_rep(n2)];
-            lsub = subset[get_rep(n1)];
-            s = n2;
-            l = n1;
-        }
+        if (sz[get_rep(n1)] < sz[get_rep(n2)]) { s = n1; l = n2; } 
+        else { s = n2; l = n1; }
+        vector<long long> &ssub = subset[get_rep(s)], &lsub = subset[get_rep(l)];;
         //printf("smaller subset contains:\n");
         //for (auto n : ssub) printf("node %lld\n", n);
         //printf("larger subset contains:\n");
@@ -88,11 +78,14 @@ int main() {
         // iterate over the nodes of the smaller subset, see if their neighbours are part of the larger subset
         for (auto n1 : ssub) {
             for (auto n2 : neighbours[n1]) {
-                if (lsub.find(n2) != lsub.end()) {
+                if (find(lsub.begin(), lsub.end(), n2) != lsub.end()) {
                     if (max_path_weight[{n1, n2}] != 0) continue;
-                    max_path_weight[{n1, n2}] = max_path_weight[{n2, n1}] = edge_weight;
+                    //printf("max weight path (%lld)->(%lld) = %lld added.\n", n1, n2, edge_weight);
+                    max_path_weight[{n1, n2}] = edge_weight;
+                    max_path_weight[{n2, n1}] = edge_weight;
                 }
             }
+            
         }
 
         // now perform the merge
@@ -103,18 +96,16 @@ int main() {
             //printf("combined set has representative %lld\n", get_rep(s));
             for (auto n : lsub) {
                 //printf("-adding %lld to combined set\n", n);
-                subset[get_rep(s)].insert(n);
+                ssub.push_back(n);
             }
-            lsub.clear();
             //printf("combined subset contains:\n");
             //for (auto n : subset[get_rep(s)]) printf("node %lld\n", n);
         } else {
             //printf("combined set has representative %lld\n", get_rep(l));
             for (auto n : ssub) {
                 //printf("-adding %lld to combined set\n", n);
-                subset[get_rep(l)].insert(n);
+                lsub.push_back(n);
             }
-            ssub.clear();
             //printf("combined subset contains:\n");
             //for (auto n : subset[get_rep(l)]) printf("node %lld\n", n);
         }
@@ -131,7 +122,7 @@ int main() {
         if (mst.find(e.first) != mst.end()) printf("%lld\n", total_cost);
         else {
             // need to remove cost of maximum edge and add cost of new edge
-            //printf("total cost: %lld, adding new edge: %lld, removing old max path edge(%lld, %lld): %lld\n", total_cost, e.second, s, l, max_path_weight[{s, l}]);
+            //printf("total cost: %lld, adding new edge: %lld, removing old max path edge(%lld, %lld): %lld\n", total_cost, e.second, e.first.first, e.first.second, max_path_weight[{e.first.first, e.first.second}]);
             printf("%lld\n", total_cost + e.second - max_path_weight[{e.first.first, e.first.second}]);
         }
     }
