@@ -111,8 +111,10 @@ int main() {
         }
 
         edges_done++;
-        total_cost += it->first;
+        total_cost += edge_weight;
         mst[it->second] = it->first;
+        max_path_weight[{n1, n2}] = edge_weight;
+        max_path_weight[{n2, n1}] = edge_weight;
         if (edges_done == n-1) break;
     }
 
