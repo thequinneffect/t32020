@@ -79,7 +79,7 @@ int main() {
         for (auto n1 : ssub) {
             for (auto n2 : neighbours[n1]) {
                 if (lsub.find(n2) != lsub.end()) {
-                    if (max_path_weight[{n1, n2}] != 0) continue;
+                    //if (max_path_weight[{n1, n2}] != 0) continue;
                     //printf("max weight path (%lld)->(%lld) = %lld added.\n", n1, n2, edge_weight);
                     max_path_weight[{n1, n2}] = edge_weight;
                     max_path_weight[{n2, n1}] = edge_weight;
