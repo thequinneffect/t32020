@@ -112,7 +112,7 @@ void update_node(int i) {
 
 // point update
 void update(int n, ll v, int i=0, int start=0, int end=np) {
-    // if we have found the node, update its difficulty
+    // if we have found the node, update its difficulty etc.
     //printf("update: at node %d, trying to insert %d\n", i, v);
     if (end - start == 1) {
         //printf("updating rt index %d with difficulty %lld\n", i, v);
@@ -129,14 +129,13 @@ void update(int n, ll v, int i=0, int start=0, int end=np) {
 }
 
 int main() {
-    // TODO: IMPORTANT, ADD IO SPEEDUP SETTINGS HERE
 
     cin >> np >> nq;
 
+    // set intial values
     for (int i=0; i < np; i++) {
         ll d;
         cin >> d;
-        //printf("array index %d corresponds with ", i);
         update(i, d);
     }
 
