@@ -1,6 +1,3 @@
-today: 
-friday: db quiz
-sat: 
-sun: db assignment
-mon: problem set 4 (6pm)
-tue: seminar reflections (two weeks worth)
+sat (7th): essay plan, problem set 5 (no marks, but the more work i do on it, the better idea i can have for when i do my actual report)
+mon (9th): problem set 5 (need > 3 in this one)
+thu : seminar reflections
