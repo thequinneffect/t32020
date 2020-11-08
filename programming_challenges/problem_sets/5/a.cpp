@@ -55,7 +55,6 @@ void update(int l, int r, int i = 0, int lb = 0, int ub = n) {
     }
     propagate(i, lb, ub);
     int mid = (lb + ub) / 2;
-    int delta_count;
     if (l < mid) update(l, min(mid, r), i*2+1, lb, mid);
     if (r > mid) update(max(l, mid), r, i*2+2, mid, ub);
     recalculate(i, lb, ub);
@@ -65,6 +64,7 @@ void update(int l, int r, int i = 0, int lb = 0, int ub = n) {
 int query(int l, int r, int i = 0, int lb = 0, int ub = n) {
     // if the query range matches
     if (l == lb && r == ub) {
+        //printf("goes to rt node %d\n", i);
         return rt[i].mods[0]; // return the # of #'s that are div by 3
     }
     // otherwise, we are actually visiting this node on our way to 
@@ -77,12 +77,15 @@ int query(int l, int r, int i = 0, int lb = 0, int ub = n) {
     return ans;
 }
 
-void init(int i=0, int v = n) {
-    rt[i].mods[0] = v;
-    if (v >= 1) {
-        init(i*2+1, v/2);
-        init(i*2+2, v/2);
+void init_node(int l, int r, int i = 0, int lb = 0, int ub = n) {
+    if (l == lb && r == ub) {
+        rt[i].mods[0] = 1;
+        return;
     }
+    int mid = (lb + ub) / 2;
+    if (l < mid) init_node(l, min(mid, r), i*2+1, lb, mid);
+    if (r > mid) init_node(max(l, mid), r, i*2+2, mid, ub);
+    rt[i].mods[0] = rt[i*2+1].mods[0] + rt[i*2+2].mods[0];
 }
 
 void print(int i=0) {
@@ -93,7 +96,7 @@ void print(int i=0) {
 int main() {
 
     cin >> n >> q;
-    init();
+    for (int i=0; i < n; i++) init_node(i, i+1);
     //print();
     for (int i=0; i < q; i++) {
         int t, a, b;
