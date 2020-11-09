@@ -106,8 +106,16 @@ void update_node(int i) {
     rt[i].sum = rt[i*2+1].sum + rt[i*2+2].sum;
     rt[i].max = max(rt[i*2+1].max, rt[i*2+2].max);
     rt[i].min = min(rt[i*2+1].min, rt[i*2+2].min);
-    rt[i].increasing = (rt[i*2+1].max <= rt[i*2+2].min);
-    rt[i].decreasing = (rt[i*2+1].min >= rt[i*2+2].max);
+    rt[i].increasing = (
+        rt[i*2+1].increasing == true &&
+        rt[i*2+2].increasing == true &&
+        (rt[i*2+1].max <= rt[i*2+2].min)
+    );
+    rt[i].decreasing = (
+        rt[i*2+1].decreasing == true &&
+        rt[i*2+2].decreasing == true &&
+        (rt[i*2+1].min >= rt[i*2+2].max)
+    );
 }
 
 // point update
