@@ -6,14 +6,9 @@ using namespace std;
 typedef pair<int, int> pii;
 
 int n;
+set<pii> points;
 
 int main() {
-
-    const auto compare = [](const pii &lhs, const pii &rhs) {
-        return lhs.first < rhs.first || (lhs.first == rhs.first && lhs.second < rhs.second);
-    };
-
-    set<pii, decltype(compare)> points(compare);
 
     cin >> n;
     for (int i=0; i < n; i++) {
@@ -31,8 +26,8 @@ int main() {
                 break;
             case 'f':
                 //printf("finding from point (%d, %d)\n", x, y);
-                set<pii>::iterator it;
-                ((it = points.upper_bound({x+1,y})) != points.end()) ? printf("%d %d\n", it->first, it->second) : printf("-1\n");
+                set<pii>::iterator it = points.lower_bound({x+1,y+1});
+                (it != points.end()) ? printf("%d %d\n", it->first, it->second) : printf("-1\n");
         } 
     }
 
