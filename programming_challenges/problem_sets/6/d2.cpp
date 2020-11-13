@@ -59,9 +59,7 @@ int main() {
     // run FW but not for all i as via, just have the newly added vertex as the via
     // that way we get all shortest paths without that vertex before adding it,
     // and all shortest paths with it after adding it
-    added[deleted[0]] = 1; // special case for the first one, as there is no possible edges when there is only 1 vertex 
-    upto++;
-    for (int i=1; i < n; i++) {
+    for (int i=0; i < n; i++) {
         upto++;
         added[deleted[i]] = 1;
         fw(deleted[i]);
