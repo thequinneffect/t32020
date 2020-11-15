@@ -18,7 +18,7 @@ n = 10
 argc = len(sys.argv)
 if (argc > 1):
   if (sys.argv[1].isdigit() and int(sys.argv[1]) > 0):
-    n = int(argv[1])
+    n = int(sys.argv[1])
   else:
     print(usage)
     exit(0)
