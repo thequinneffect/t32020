@@ -1,0 +1,31 @@
+#!/usr/bin/python3
+# COMP3311 20T3 Ass3 ... print info about cast and crew for Movie
+
+import sys
+import psycopg2
+#from helpers import whatever, functions, you, need
+
+# define any local helper functions here
+
+# set up some globals
+
+usage = "Usage: minfo 'MovieTitlePattern' [Year]"
+db = None
+
+# process command-line args
+
+argc = len(sys.argv)
+
+# manipulate database
+
+try:
+  db = psycopg2.connect("dbname=imdb")
+
+  # ... add your code here ...
+
+except psycopg2.Error as err:
+  print("DB error: ", err)
+finally:
+  if db:
+    db.close()
+
