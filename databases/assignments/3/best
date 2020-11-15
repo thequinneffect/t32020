@@ -17,11 +17,13 @@ db = None
 n = 10
 argc = len(sys.argv)
 if (argc > 1):
-  n = sys.argv[1]
-  if (not n.isdigit() or n < 1):
+  if (argv[1].isdigit() and int(argv[1]) > 0):
+    n = int(argv[1])
+  else:
     print(usage)
     exit(0)
-  n = int(n)
+
+print(f"is digit? {isdigit(n)}, number = {n}")
 
 # manipulate database
 
