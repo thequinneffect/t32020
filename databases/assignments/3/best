@@ -17,7 +17,7 @@ db = None
 n: int = 10
 argc = len(sys.argv)
 if (argc > 1):
-  n = argv[1]
+  n = sys.argv[1]
   if (not isinstance(n, int) or n < 1):
     print(usage)
     exit(0)
