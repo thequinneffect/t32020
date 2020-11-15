@@ -14,7 +14,15 @@ db = None
 
 # process command-line args
 
+n: int = 10
 argc = len(sys.argv)
+if (argc > 1):
+  n = argc[1]
+  if (not isinstance(n, int) or n < 1):
+    print(usage)
+    exit(0)
+
+
 
 # manipulate database
 
