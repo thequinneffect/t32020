@@ -23,13 +23,21 @@ if (argc > 1):
     print(usage)
     exit(0)
 
-print(f"is digit? {type(n)}, number = {n}")
-
 # manipulate database
 
 try:
   db = psycopg2.connect("dbname=imdb")
-  # ... add your code here ...
+  cur = db.cursor()
+  query = """
+  select m.title, m.rating
+  from movies m 
+  order by m.rating desc, m.title asc
+  limit %;
+  """
+  cur.execute(query, n)
+  for row in cur.fetchall():
+    title, rating = row
+    print(f"{title} {rating}")
 except psycopg2.Error as err:
   print("DB error: ", err)
 finally:
