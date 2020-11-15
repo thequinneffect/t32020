@@ -32,7 +32,7 @@ try:
   select m.title, m.rating
   from movies m 
   order by m.rating desc, m.title asc
-  limit %;
+  limit %
   """
   cur.execute(query, [n])
   for row in cur.fetchall():
