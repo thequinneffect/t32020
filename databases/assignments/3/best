@@ -23,7 +23,7 @@ if (argc > 1):
     print(usage)
     exit(0)
 
-print(f"is digit? {isdigit(n)}, number = {n}")
+print(f"is digit? {n.isdigit()}, number = {n}")
 
 # manipulate database
 
