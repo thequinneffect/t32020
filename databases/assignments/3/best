@@ -29,15 +29,15 @@ try:
   db = psycopg2.connect("dbname=imdb")
   cur = db.cursor()
   query = """
-  select m.title, m.rating
+  select m.rating, m.title, m.start_year
   from movies m 
   order by m.rating desc, m.title asc
   limit %s
   """
   cur.execute(query, [n])
   for row in cur.fetchall():
-    title, rating = row
-    print(f"{title} {rating}")
+    rating, title, year = row
+    print(f"{rating} {title} ({year})")
 except psycopg2.Error as err:
   print("DB error: ", err)
 finally:
