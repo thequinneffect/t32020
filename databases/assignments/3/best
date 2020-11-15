@@ -34,7 +34,7 @@ try:
   order by m.rating desc, m.title asc
   limit %;
   """
-  cur.execute(query, n)
+  cur.execute(query, [n])
   for row in cur.fetchall():
     title, rating = row
     print(f"{title} {rating}")
