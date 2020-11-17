@@ -32,9 +32,15 @@ try:
   where title ~* %s
   """
   cursor.execute(query, [title_regex])
-  print(cursor.rowcount)
-  for row in cursor.fetchall():
-    print(row)
+
+  if (cursor.rowcount == 0):
+    print(f"No movie matching \'{title_regex}\'")
+  else if (cursor.rowcount == 1):
+    print("doing aliases")
+  else:
+    for row in cursor.fetchall():
+      print(row)
+  
 except psycopg2.Error as err:
   print("DB error: ", err)
 finally:
