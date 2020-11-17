@@ -49,7 +49,9 @@ try:
     else:
       print(f"{title} was also released as")
       for row in cursor.fetchall():
-        title, region: str, lang: str = row
+        region: str
+        lang: str
+        title, region, lang = row
         region.strip()
         lang.strip()
         info = f"\'{title}\'"
