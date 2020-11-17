@@ -47,7 +47,7 @@ try:
     if (cursor.rowcount == 0):
       print(f"{title} {year} has no alternative releases")
     else:
-      print(f"{title} was also released as")
+      print(f"{title} ({year}) was also released as")
       for row in cursor.fetchall():
         title, region, lang = row
         region = str(region).strip()
