@@ -35,7 +35,7 @@ try:
 
   if (cursor.rowcount == 0):
     print(f"No movie matching \'{title_regex}\'")
-  else if (cursor.rowcount == 1):
+  elif (cursor.rowcount == 1):
     print("doing aliases")
   else:
     for row in cursor.fetchall():
