@@ -15,6 +15,11 @@ db = None
 # process command-line args
 
 argc = len(sys.argv)
+if (argc < 2):
+  print(usage)
+  exit(0)
+partial_name = sys.argv[1]
+print(partial_name)
 
 # manipulate database
 
