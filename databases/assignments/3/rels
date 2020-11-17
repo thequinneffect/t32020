@@ -52,11 +52,11 @@ try:
         title, region, lang = row
         info = f"\'{title}\'"
         if (region is not None and lang is not None):
-          info = info + f" (region: {region}, language: {lang})"
-        elif (lang is not None):
-          info = info + f" (region: {region})"
+          info = info + f"(region: {region}, language: {lang})"
         elif (region is not None):
-          info = info + f" (language: {lang})"
+          info = info + f"(region: {region})"
+        elif (region is not None):
+          info = info + f"(language: {lang})"
         print(info)
   else:
     print(f"Movies matching \'{title_regex}\'")
