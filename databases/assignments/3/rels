@@ -19,27 +19,50 @@ if (argc < 2):
   print(usage)
   exit(0)
 title_regex = sys.argv[1]
-print(title_regex)
 
 # manipulate database
 
 try:
   db = psycopg2.connect("dbname=imdb")
   cursor = db.cursor()
-  query = """
-  select *
+  get_movies = """
+  select id, title, start_year
   from movies
   where title ~* %s
+  order by start_year, title
   """
-  cursor.execute(query, [title_regex])
+  cursor.execute(get_movies, [title_regex])
 
   if (cursor.rowcount == 0):
     print(f"No movie matching \'{title_regex}\'")
   elif (cursor.rowcount == 1):
-    print("doing aliases")
+    id, title, year = cursor.fetchone()
+    get_aliases = """
+    select local_title, region, language
+    from aliases 
+    where movie_id = %s
+    order by ordering
+    """
+    cursor.execute(get_aliases, [id])
+    if (cursor.rowcount == 0):
+      print(f"{title} {year} has no alternative releases")
+    else:
+      print(f"{title} was also released as")
+      for row in cursor.fetchall():
+        title, region, lang = row
+        info = f"\'{title}\'"
+        if (region is not None and lang is not None):
+          info = info + f" (region: {region}, language: {lang})"
+        elif (lang is not None):
+          info = info + f" (region: {region})"
+        elif (region is not None):
+          info = info + f" (language: {lang})"
+        print(info)
   else:
+    print(f"Movies matching \'{title_regex}\'")
     for row in cursor.fetchall():
-      print(row)
+      _, title, year = row
+      print(f"{title} {year}")
   
 except psycopg2.Error as err:
   print("DB error: ", err)
