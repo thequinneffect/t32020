@@ -18,14 +18,23 @@ argc = len(sys.argv)
 if (argc < 2):
   print(usage)
   exit(0)
-partial_name = sys.argv[1]
-print(partial_name)
+title_regex = sys.argv[1]
+print(title_regex)
 
 # manipulate database
 
 try:
   db = psycopg2.connect("dbname=imdb")
-  # ... add your code here ...
+  cursor = db.cursor()
+  query = """
+  select *
+  from movies
+  where title ~* %s
+  """
+  cursor.execute(query, [title_regex])
+  print(cursor.rowcount)
+  for row in cursor.fetchall():
+    print(row)
 except psycopg2.Error as err:
   print("DB error: ", err)
 finally:
