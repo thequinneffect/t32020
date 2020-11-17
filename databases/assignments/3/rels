@@ -49,11 +49,9 @@ try:
     else:
       print(f"{title} was also released as")
       for row in cursor.fetchall():
-        region: str
-        lang: str
         title, region, lang = row
-        region.strip()
-        lang.strip()
+        region = str(region).strip()
+        lang = str(lang).strip()
         info = f"\'{title}\'"
         if (region is not None and lang is not None):
           info = info + f" (region: {region}, language: {lang})"
