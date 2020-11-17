@@ -61,10 +61,10 @@ try:
           info = info + f" (language: {lang})"
         print(info)
   else:
-    print(f"Movies matching \'{title_regex}\'")
+    print(f"Movies matching \'{title_regex}\'\n===============")
     for row in cursor.fetchall():
       _, title, year = row
-      print(f"{title} {year}")
+      print(f"{title} ({year})")
   
 except psycopg2.Error as err:
   print("DB error: ", err)
