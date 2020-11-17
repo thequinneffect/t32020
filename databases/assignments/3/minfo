@@ -32,7 +32,7 @@ try:
   select *
   from movies
   where title ~* %s
-  and start_year ~ %s
+  and start_year::text ~ %s
   """
   cursor.execute(get_movies, [title_regex, year])
   if (cursor.rowcount == 0):
