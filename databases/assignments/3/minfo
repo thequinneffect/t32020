@@ -15,12 +15,33 @@ db = None
 # process command-line args
 
 argc = len(sys.argv)
+if (argc < 2):
+  print(usage)
+  exit(0)
+title_regex = sys.argv[1]
+year = '\d'
+if (argc == 3):
+  year = sys.argv[2]
 
 # manipulate database
 
 try:
   db = psycopg2.connect("dbname=imdb")
-
+  cursor = db.cursor()
+  get_movies = """
+  select *
+  from movies
+  where title ~* %s
+  and start_year ~ %s
+  """
+  cursor.execute(get_movies, [title_regex, year])
+  if (cursor.rowcount == 0):
+    print(f"No movie matching {title_regex}")
+  elif (cursor.rowcount == 1):
+    print("TODO: printing movie details...")
+  else:
+    for row in cursor.fetchall():
+      print(row)
   # ... add your code here ...
 
 except psycopg2.Error as err:
