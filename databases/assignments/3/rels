@@ -50,6 +50,8 @@ try:
       print(f"{title} was also released as")
       for row in cursor.fetchall():
         title, region, lang = row
+        region.strip()
+        lang.strip()
         info = f"\'{title}\'"
         if (region is not None and lang is not None):
           info = info + f" (region: {region}, language: {lang})"
