@@ -21,6 +21,8 @@ if (argc < 2):
 title_regex = sys.argv[1]
 year = '\d'
 if (argc == 3):
+  if (not argv[1].isdigit()):
+    print(usage)
   year = sys.argv[2]
 
 # manipulate database
