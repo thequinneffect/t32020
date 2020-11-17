@@ -53,13 +53,11 @@ try:
         region = str(region).strip()
         lang = str(lang).strip()
         info = f"\'{title}\'"
-        print(f"region is {region}")
-        print(f"language is {lang}")
-        if (region and lang):
+        if (region != 'None' and lang != 'None'):
           info = info + f" (region: {region}, language: {lang})"
-        elif (region):
+        elif (region != 'None'):
           info = info + f" (region: {region})"
-        elif (lang):
+        elif (lang != 'None'):
           info = info + f" (language: {lang})"
         print(info)
   else:
