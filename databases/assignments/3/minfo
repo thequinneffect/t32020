@@ -23,6 +23,7 @@ year = '\d'
 if (argc == 3):
   if (not sys.argv[2].isdigit()):
     print(usage)
+    exit(0)
   year = sys.argv[2]
 
 # manipulate database
