@@ -55,12 +55,11 @@ try:
         info = f"\'{title}\'"
         print(f"region is {region}")
         print(f"language is {lang}")
-        if (region is not None and lang is not None):
-          print("region and lang are both not None apparently")
+        if (region and lang):
           info = info + f" (region: {region}, language: {lang})"
-        elif (region is not None):
+        elif (region):
           info = info + f" (region: {region})"
-        elif (region is not None):
+        elif (lang):
           info = info + f" (language: {lang})"
         print(info)
   else:
