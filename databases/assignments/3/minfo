@@ -68,7 +68,7 @@ try:
     print("and with")
     for row in cursor.fetchall():
       name, role = row
-      print(f" {name}: {str(role).capitalize()}")
+      print(f" {name}: {str(role).capitalize().strip()}")
   else:
     print(f"Movies matching \'{title_regex}\'\n===============")
     for row in cursor.fetchall():
