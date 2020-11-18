@@ -32,7 +32,7 @@ try:
   db = psycopg2.connect("dbname=imdb")
   cursor = db.cursor()
   get_movies = """
-  select *
+  select id, title, start_year
   from movies
   where title ~* %s
   and start_year::text ~ %s
@@ -42,10 +42,23 @@ try:
     print(f"No movie matching {title_regex}")
   elif (cursor.rowcount == 1):
     print("TODO: printing movie details...")
-  else:
+    get_actors = """
+    select n.name, a.played
+    from acting_roles a
+    join names n on (n.id = a.name_id)
+    join principals p on (p.name_id = n.id)
+    where a.movie_id = %s
+    order by p.ordering, n.name
+    """
+    movie_id = cursor.fetchone()
+    cursor.execute(get_actors, [movie_id])
     for row in cursor.fetchall():
       print(row)
-  # ... add your code here ...
+  else:
+    print(f"Movies matching \'{title_regex}\'\n===============")
+    for row in cursor.fetchall():
+      _, title, year = row
+      print(f"{title} ({year})")
 
 except psycopg2.Error as err:
   print("DB error: ", err)
