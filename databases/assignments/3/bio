@@ -36,14 +36,30 @@ try:
   from names
   where name ~* %s
   and birth_year::text ~* %s
+  order by id
   """
   cursor.execute(get_people, [title_regex, year])
+  full_pattern = f"'{title_regex}'"
+  if (year.isdigit()):
+    full_pattern = full_pattern + f" {year}"
   if (cursor.rowcount == 0):
-    print("no records found")
+    print(f"No name matching {full_pattern}")
   elif (cursor.rowcount == 1):
     print("showing bio")
   else:
-    print("showing people")
+    print(f"Names matching {full_pattern}\n===============")
+    for row in cusor.fetchall():
+      id, name, birth, death = row
+      print(f"id={id}, name={name}, birth={birth}, death={death}")l
+      if (birth is not None and death is not None):
+        name = name + f" ({birth}-{death})"
+      elif (death is not None):
+        name = name + f" (-{death})"
+      elif (birth is not None):
+        name = name + f" ({birth}-)"
+      else:
+        name = name + " (???)"
+      print(f"{name}")
 except psycopg2.Error as err:
   print("DB error: ", err)
 finally:
