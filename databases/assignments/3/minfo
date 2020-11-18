@@ -54,6 +54,17 @@ try:
     cursor.execute(get_actors, [movie_id])
     for row in cursor.fetchall():
       print(row)
+    get_crew = """
+    select n.name, c.role
+    from crew_roles c
+    join names n on (n.id = c.name_id)
+    join principals p on (p.name_id = n.id and p.movie_id = c.movie_id)
+    where c.movie_id = %s
+    order by p.ordering, n.name
+    """
+    cursor.execute(get_crew, [movie_id])
+    for row in cursor.fetchall():
+      print(row)
   else:
     print(f"Movies matching \'{title_regex}\'\n===============")
     for row in cursor.fetchall():
