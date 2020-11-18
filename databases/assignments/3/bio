@@ -19,7 +19,7 @@ if (argc < 2):
   print(usage)
   exit(0)
 title_regex = sys.argv[1]
-year = '\d'
+year = '/^(\s*|\d+)$/' # allow number or null
 if (argc == 3):
   if (not sys.argv[2].isdigit()):
     print(usage)
@@ -35,8 +35,8 @@ try:
   select * 
   from names
   where name ~* %s
-  and (birth_year::text ~* %s or birth_year is null)
-  order by id
+  and birth_year::text ~* %s
+  order by name, birth_year, id
   """
   cursor.execute(get_people, [title_regex, year])
   full_pattern = f"'{title_regex}'"
