@@ -50,7 +50,7 @@ try:
     print(f"Names matching {full_pattern}\n===============")
     for row in cursor.fetchall():
       id, name, birth, death = row
-      print(f"id={id}, name={name}, birth={birth}, death={death}")
+      #print(f"id={id}, name={name}, birth={birth}, death={death}")
       if (birth is not None and death is not None):
         name = name + f" ({birth}-{death})"
       elif (death is not None):
