@@ -50,7 +50,7 @@ try:
     where a.movie_id = %s
     order by p.ordering, n.name
     """
-    movie_id = cursor.fetchone()
+    movie_id = cursor.fetchone()[0]
     cursor.execute(get_actors, [movie_id])
     for row in cursor.fetchall():
       print(row)
