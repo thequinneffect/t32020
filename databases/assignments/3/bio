@@ -15,12 +15,35 @@ db = None
 # process command-line args
 
 argc = len(sys.argv)
+if (argc < 2):
+  print(usage)
+  exit(0)
+title_regex = sys.argv[1]
+year = '\d'
+if (argc == 3):
+  if (not sys.argv[2].isdigit()):
+    print(usage)
+    exit(0)
+  year = sys.argv[2]
 
 # manipulate database
 
 try:
   db = psycopg2.connect("dbname=imdb")
-  # ... add your code here ...
+  cursor = db.cursor()
+  get_people = """
+  select * 
+  from names
+  where name ~* %s
+  and birth_year::text ~* %s
+  """
+  cursor.execute(get_people, [title_regex, year])
+  if (cursor.rowcount == 0):
+    print("no records found")
+  elif (cursor.rowcount == 1):
+    print("showing bio")
+  else:
+    print("showing people")
 except psycopg2.Error as err:
   print("DB error: ", err)
 finally:
