@@ -35,7 +35,7 @@ try:
   select * 
   from names
   where name ~* %s
-  and birth_year::text ~* %s
+  and (birth_year::text ~* %s or birth_year is null)
   order by id
   """
   cursor.execute(get_people, [title_regex, year])
