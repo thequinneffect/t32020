@@ -53,7 +53,7 @@ try:
     join names n on (n.id = a.name_id)
     join principals p on (p.name_id = n.id and p.movie_id = a.movie_id)
     where a.movie_id = %s
-    order by p.ordering, n.name
+    order by p.ordering, a.played
     """
     cursor.execute(get_actors, [movie_id])
     print("Starring")
@@ -66,7 +66,7 @@ try:
     join names n on (n.id = c.name_id)
     join principals p on (p.name_id = n.id and p.movie_id = c.movie_id)
     where c.movie_id = %s
-    order by p.ordering, n.name
+    order by p.ordering, c.role
     """
     cursor.execute(get_crew, [movie_id])
     print("and with")
