@@ -55,7 +55,7 @@ try:
     print("Starring")
     for row in cursor.fetchall():
       name, character = row
-      print(f"{name} as {character}")
+      print(f" {name} as {character}")
     get_crew = """
     select n.name, c.role
     from crew_roles c
@@ -68,7 +68,7 @@ try:
     print("and with")
     for row in cursor.fetchall():
       name, role = row
-      print(f"{name}: {role}")
+      print(f" {name}: {str(role).capitalize()}")
   else:
     print(f"Movies matching \'{title_regex}\'\n===============")
     for row in cursor.fetchall():
