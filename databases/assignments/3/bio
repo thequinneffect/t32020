@@ -19,7 +19,7 @@ if (argc < 2):
   print(usage)
   exit(0)
 title_regex = sys.argv[1]
-year = '/^(\s*|\d+)$/' # allow number or null
+year = None
 if (argc == 3):
   if (not sys.argv[2].isdigit()):
     print(usage)
@@ -35,10 +35,17 @@ try:
   select * 
   from names
   where name ~* %s
-  and birth_year::text ~* %s
+  """
+  args = [title_regex]
+  if (year is not None):
+    get_people = get_people + """
+    and birth_year = %s
+    """
+    args.append(year)
+  get_people = get_people + """
   order by name, birth_year, id
   """
-  cursor.execute(get_people, [title_regex, year])
+  cursor.execute(get_people, args)
   full_pattern = f"'{title_regex}'"
   if (year.isdigit()):
     full_pattern = full_pattern + f" {year}"

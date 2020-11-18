@@ -38,6 +38,7 @@ try:
   and start_year::text ~ %s
   order by start_year, title
   """
+  # TODO: will ^ find movies where the start_year is null? (because of the \d)
   cursor.execute(get_movies, [title_regex, year])
   full_pattern = f"'{title_regex}'"
   if (year.isdigit()):
