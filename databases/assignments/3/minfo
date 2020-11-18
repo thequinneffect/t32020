@@ -41,7 +41,8 @@ try:
   if (cursor.rowcount == 0):
     print(f"No movie matching {title_regex}")
   elif (cursor.rowcount == 1):
-    print("TODO: printing movie details...")
+    movie_id, title, start_year = cursor.fetchone()
+    print(f"{title} ({start_year})\n===============")
     get_actors = """
     select n.name, a.played
     from acting_roles a
@@ -50,10 +51,11 @@ try:
     where a.movie_id = %s
     order by p.ordering, n.name
     """
-    movie_id = cursor.fetchone()[0]
     cursor.execute(get_actors, [movie_id])
+    print("Starring")
     for row in cursor.fetchall():
-      print(row)
+      name, character = row
+      print(f"{name} as {character}")
     get_crew = """
     select n.name, c.role
     from crew_roles c
@@ -63,8 +65,10 @@ try:
     order by p.ordering, n.name
     """
     cursor.execute(get_crew, [movie_id])
+    print("and with")
     for row in cursor.fetchall():
-      print(row)
+      name, role = row
+      print(f"{name}: {role}")
   else:
     print(f"Movies matching \'{title_regex}\'\n===============")
     for row in cursor.fetchall():
