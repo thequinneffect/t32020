@@ -48,7 +48,7 @@ try:
     print("showing bio")
   else:
     print(f"Names matching {full_pattern}\n===============")
-    for row in cusor.fetchall():
+    for row in cursor.fetchall():
       id, name, birth, death = row
       print(f"id={id}, name={name}, birth={birth}, death={death}")
       if (birth is not None and death is not None):
