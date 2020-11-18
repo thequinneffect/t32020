@@ -39,7 +39,10 @@ try:
   """
   cursor.execute(get_movies, [title_regex, year])
   if (cursor.rowcount == 0):
-    print(f"No movie matching '{title_regex}'")
+    full_pattern = f"'{title_regex}'"
+    if (year.isdigit()):
+      full_pattern = full_pattern + f" {year}"
+    print(f"No movie matching {full_pattern}")
   elif (cursor.rowcount == 1):
     movie_id, title, start_year = cursor.fetchone()
     print(f"{title} ({start_year})\n===============")
