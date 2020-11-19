@@ -1,0 +1,77 @@
+#!/usr/bin/python3
+# COMP3311 20T3 Ass3 ... get Name's biography/filmography
+
+import sys
+import psycopg2
+#from helpers import whatever, functions, you, need
+
+# define any local helper functions here
+def lifespan(birth, death):
+  if (birth is not None and death is not None):
+    return f" ({birth}-{death})"
+  elif (death is not None):
+    return f" (-{death})"
+  elif (birth is not None):
+    return f" ({birth}-)"
+  else:
+    return " (???)"
+
+# set up some globals
+
+usage = "Usage: bio 'NamePattern' [Year]"
+db = None
+
+# process command-line args
+
+argc = len(sys.argv)
+if (argc < 2):
+  print(usage)
+  exit(0)
+name_regex = sys.argv[1]
+year = None
+if (argc == 3):
+  if (not sys.argv[2].isdigit()):
+    print(usage)
+    exit(0)
+  year = sys.argv[2]
+
+# manipulate database
+
+try:
+  db = psycopg2.connect("dbname=imdb")
+  cursor = db.cursor()
+  get_people = """
+  select * 
+  from names
+  where name ~* %s
+  """
+  args = [name_regex]
+  full_pattern = f"'{name_regex}'"
+  if (year is not None):
+    get_people = get_people + """
+    and birth_year = %s
+    """
+    args.append(year)
+    full_pattern = full_pattern + f" {year}"
+  get_people = get_people + """
+  order by name, birth_year, id
+  """
+  cursor.execute(get_people, args)
+  if (cursor.rowcount == 0):
+    print(f"No name matching {full_pattern}")
+  elif (cursor.rowcount == 1):
+    id, name, birth, death = cursor.fetchone()
+    print(f"Filmography for {name_regex}{lifespan(birth, death)}")
+  else:
+    print(f"Names matching {full_pattern}\n===============")
+    for row in cursor.fetchall():
+      id, name, birth, death = row
+      #print(f"id={id}, name={name}, birth={birth}, death={death}")
+      name = name + lifespan(birth, death)
+      print(f"{name}")
+except psycopg2.Error as err:
+  print("DB error: ", err)
+finally:
+  if db:
+    db.close()
+

@@ -1,0 +1,74 @@
+#!/usr/bin/python3
+# COMP3311 20T3 Ass3 ... print info about different releases for Movie
+
+import sys
+import psycopg2
+#from helpers import whatever, functions, you, need
+
+# define any local helper functions here
+
+# set up some globals
+
+usage = "Usage: rels 'PartialMovieTitle'"
+db = None
+
+# process command-line args
+
+argc = len(sys.argv)
+if (argc < 2):
+  print(usage)
+  exit(0)
+title_regex = sys.argv[1]
+
+# manipulate database
+
+try:
+  db = psycopg2.connect("dbname=imdb")
+  cursor = db.cursor()
+  get_movies = """
+  select id, title, start_year
+  from movies
+  where title ~* %s
+  order by start_year, title
+  """
+  cursor.execute(get_movies, [title_regex])
+
+  if (cursor.rowcount == 0):
+    print(f"No movie matching \'{title_regex}\'")
+  elif (cursor.rowcount == 1):
+    id, title, year = cursor.fetchone()
+    get_aliases = """
+    select local_title, region, language
+    from aliases 
+    where movie_id = %s
+    order by ordering
+    """
+    cursor.execute(get_aliases, [id])
+    if (cursor.rowcount == 0):
+      print(f"{title} {year} has no alternative releases")
+    else:
+      print(f"{title} ({year}) was also released as")
+      for row in cursor.fetchall():
+        title, region, lang = row
+        region = str(region).strip()
+        lang = str(lang).strip()
+        info = f"\'{title}\'"
+        if (region != 'None' and lang != 'None'):
+          info = info + f" (region: {region}, language: {lang})"
+        elif (region != 'None'):
+          info = info + f" (region: {region})"
+        elif (lang != 'None'):
+          info = info + f" (language: {lang})"
+        print(info)
+  else:
+    print(f"Movies matching \'{title_regex}\'\n===============")
+    for row in cursor.fetchall():
+      _, title, year = row
+      print(f"{title} ({year})")
+  
+except psycopg2.Error as err:
+  print("DB error: ", err)
+finally:
+  if db:
+    db.close()
+
