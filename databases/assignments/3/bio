@@ -84,7 +84,7 @@ try:
       if (played is not None):
         print(f" playing {played}")
       else:
-        print(f" as {str(role).capitalize()}") # might need .strip?
+        print(f" as {str(role).capitalize().replace('_', ' ')}") # might need .strip?
   else:
     print(f"Names matching {full_pattern}\n===============")
     for row in cursor.fetchall():
