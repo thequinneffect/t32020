@@ -61,6 +61,7 @@ try:
     print(f"No name matching {full_pattern}")
   elif (cursor.rowcount == 1):
     name_id, name, birth, death = cursor.fetchone()
+    print(name_id, name, birth, death)
     print(f"Filmography for {name_regex}{lifespan(birth, death)}")
     get_filmography = """
     select m.title, m.start_year, a.played, Null as role
@@ -74,7 +75,7 @@ try:
     join principals p on (p.movie_id = m.id and p.name_id = %s)
     order by start_year, title, played, role
     """
-    cursor.execute(get_filmography, [name_id])
+    cursor.execute(get_filmography, name_id)
     curr_movie = None
     for row in cursor.fetchall():
       title, year, played, role = row
