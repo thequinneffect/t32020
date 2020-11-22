@@ -3,14 +3,34 @@
 
 import sys
 import psycopg2
-#from helpers import whatever, functions, you, need
+from helpers import header
 
-# define any local helper functions here
-
-# set up some globals
+# globals and queries
 
 usage = "Usage: rels 'PartialMovieTitle'"
 db = None
+get_movies = """
+select id, title, start_year
+from movies
+where title ~* %s
+order by start_year, title
+"""
+get_aliases = """
+select local_title, region, language
+from aliases 
+where movie_id = %s
+order by ordering
+"""
+# add the appropriate region and lang to the title
+def build_alias_info(title, region, lang):
+  info = f"\'{title}\'"
+  if (region != 'None' and lang != 'None'):
+    info = info + f" (region: {region}, language: {lang})"
+  elif (region != 'None'):
+    info = info + f" (region: {region})"
+  elif (lang != 'None'):
+    info = info + f" (language: {lang})"
+  return info
 
 # process command-line args
 
@@ -25,43 +45,26 @@ title_regex = sys.argv[1]
 try:
   db = psycopg2.connect("dbname=imdb")
   cursor = db.cursor()
-  get_movies = """
-  select id, title, start_year
-  from movies
-  where title ~* %s
-  order by start_year, title
-  """
   cursor.execute(get_movies, [title_regex])
 
-  if (cursor.rowcount == 0):
+  if (cursor.rowcount == 0): # matched 0 movies, done
     print(f"No movie matching \'{title_regex}\'")
-  elif (cursor.rowcount == 1):
+
+  elif (cursor.rowcount == 1): # matched one, so get aliases
     id, title, year = cursor.fetchone()
-    get_aliases = """
-    select local_title, region, language
-    from aliases 
-    where movie_id = %s
-    order by ordering
-    """
     cursor.execute(get_aliases, [id])
-    if (cursor.rowcount == 0):
+    if (cursor.rowcount == 0): # no aliases for this movie
       print(f"{title} {year} has no alternative releases")
-    else:
+    else: # print the found aliases
       print(f"{title} ({year}) was also released as")
       for row in cursor.fetchall():
         title, region, lang = row
         region = str(region).strip()
         lang = str(lang).strip()
-        info = f"\'{title}\'"
-        if (region != 'None' and lang != 'None'):
-          info = info + f" (region: {region}, language: {lang})"
-        elif (region != 'None'):
-          info = info + f" (region: {region})"
-        elif (lang != 'None'):
-          info = info + f" (language: {lang})"
-        print(info)
-  else:
-    print(f"Movies matching \'{title_regex}\'\n===============")
+        print(build_alias_info(title, region, lang))
+        
+  else: # matched many movies, so print them
+    header(f"Movies matching \'{title_regex}\'")
     for row in cursor.fetchall():
       _, title, year = row
       print(f"{title} ({year})")
