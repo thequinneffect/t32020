@@ -62,6 +62,29 @@ try:
   elif (cursor.rowcount == 1):
     id, name, birth, death = cursor.fetchone()
     print(f"Filmography for {name_regex}{lifespan(birth, death)}")
+    get_filmography = """
+    select m.title, m.start_year, a.played, Null as role
+    from movies m
+    join acting_roles a on (a.movie_id = m.id and a.name_id = %s)
+    join principals p on (p.movie_id = m.id and p.name_id = %s)
+    union
+    select m.title, m.start_year, Null as played, c.role
+    from movies m
+    join crew_roles c on (c.movie_id = m.id and c.name_id = %s)
+    join principals p on (p.movie_id = m.id and p.name_id = %s)
+    order by start_year, title, played, role
+    """
+    cursor.execute(get_filmography, [id])
+    curr_movie = None
+    for row in cursor.fetchall():
+      title, year, played, role = row
+      if (title != curr_movie):
+        curr_movie = title
+        print(f"{title} ({year})")
+      if (played is not None):
+        print(f" playing {played}")
+      else:
+        print(f" as {str(role).capitalize()}") # might need .strip?
   else:
     print(f"Names matching {full_pattern}\n===============")
     for row in cursor.fetchall():
