@@ -1,3 +1,16 @@
-sat (7th): essay plan, problem set 5 (no marks, but the more work i do on it, the better idea i can have for when i do my actual report)
-mon (9th): problem set 5 (need > 3 in this one)
-thu : seminar reflections
+thu: ethics essay (draft)
+fri: ethics essay (final)
+sat: db assignment (mostly done)
+sun: prog chals (lecture revision and set 7 - max flow problems)
+mon: db assignment
+
+essay strategy:
+	- pick 1 specific argument
+	- collate all evidence and points for/against it
+	- form an ethical judgement
+	- write out basic ideas in dot points
+	- repeat for other arguments
+
+	- also go back over ethics lectures
+	- also go back over piazza post detailing what to do and what not to do in the essay
+	- remember ETHICS ETHICS ETHICS
