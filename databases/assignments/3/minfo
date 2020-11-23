@@ -3,14 +3,40 @@
 
 import sys
 import psycopg2
-#from helpers import whatever, functions, you, need
+from helpers import header
 
-# define any local helper functions here
-
-# set up some globals
+# globals and queries
 
 usage = "Usage: minfo 'MovieTitlePattern' [Year]"
 db = None
+get_movies = """
+select id, title, start_year
+from movies
+where title ~* %s
+and start_year::text ~ %s
+order by start_year, title
+"""
+# cast start_year to text so that \d can be used by default to match 
+# any number, or a specific number if supplied by the user on cmdline
+# Can do this because start_year is not null (guaranteed a number)
+get_actors = """
+select n.name, a.played
+from acting_roles a
+join names n on (n.id = a.name_id)
+join principals p on (p.name_id = n.id and p.movie_id = a.movie_id)
+where a.movie_id = %s
+order by p.ordering, a.played
+"""
+get_crew = """
+select n.name, c.role
+from crew_roles c
+join names n on (n.id = c.name_id)
+join principals p on (p.name_id = n.id and p.movie_id = c.movie_id)
+where c.movie_id = %s
+order by p.ordering, c.role
+"""
+# Note: could have done get_actors and get_crew in one query with a union
+# but it is performant enough like this
 
 # process command-line args
 
@@ -19,7 +45,7 @@ if (argc < 2):
   print(usage)
   exit(0)
 title_regex = sys.argv[1]
-year = '\d'
+year = '\d' # default to \d which will match any number
 if (argc == 3):
   if (not sys.argv[2].isdigit()):
     print(usage)
@@ -31,50 +57,33 @@ if (argc == 3):
 try:
   db = psycopg2.connect("dbname=imdb")
   cursor = db.cursor()
-  get_movies = """
-  select id, title, start_year
-  from movies
-  where title ~* %s
-  and start_year::text ~ %s
-  order by start_year, title
-  """
+
   cursor.execute(get_movies, [title_regex, year])
+
+  # need to update the pattern for printing if user supplied a year
   full_pattern = f"'{title_regex}'"
   if (year.isdigit()):
     full_pattern = full_pattern + f" {year}"
-  if (cursor.rowcount == 0):
+
+  if (cursor.rowcount == 0): # no movies found, done
     print(f"No movie matching {full_pattern}")
-  elif (cursor.rowcount == 1):
+
+  elif (cursor.rowcount == 1): # found the one movie, show info
     movie_id, title, start_year = cursor.fetchone()
-    print(f"{title} ({start_year})\n===============")
-    get_actors = """
-    select n.name, a.played
-    from acting_roles a
-    join names n on (n.id = a.name_id)
-    join principals p on (p.name_id = n.id and p.movie_id = a.movie_id)
-    where a.movie_id = %s
-    order by p.ordering, a.played
-    """
+    header(f"{title} ({start_year})")
     cursor.execute(get_actors, [movie_id])
     print("Starring")
     for row in cursor.fetchall():
       name, character = row
       print(f" {name} as {character}")
-    get_crew = """
-    select n.name, c.role
-    from crew_roles c
-    join names n on (n.id = c.name_id)
-    join principals p on (p.name_id = n.id and p.movie_id = c.movie_id)
-    where c.movie_id = %s
-    order by p.ordering, c.role
-    """
     cursor.execute(get_crew, [movie_id])
     print("and with")
     for row in cursor.fetchall():
       name, role = row
       print(f" {name}: {str(role).capitalize().strip()}")
-  else:
-    print(f"Movies matching {full_pattern}\n===============")
+      
+  else: # found many movies, print them all
+    header(f"Movies matching {full_pattern}")
     for row in cursor.fetchall():
       _, title, year = row
       print(f"{title} ({year})")

@@ -3,9 +3,9 @@
 
 import sys
 import psycopg2
-#from helpers import whatever, functions, you, need
+from helpers import header
 
-# define any local helper functions here
+# append the appropriate bracket depending on years
 def lifespan(birth, death):
   if (birth is not None and death is not None):
     return f" ({birth}-{death})"
@@ -16,10 +16,29 @@ def lifespan(birth, death):
   else:
     return " (???)"
 
-# set up some globals
+# globals and queries
 
 usage = "Usage: bio 'NamePattern' [Year]"
 db = None
+# this is just the base version of the query, it is built up below
+get_people = """
+select * 
+from names
+where name ~* %s
+"""
+get_filmography = """
+select m.title, m.start_year, a.played, Null as role
+from movies m
+join acting_roles a on (a.movie_id = m.id and a.name_id = %s)
+join principals p on (p.movie_id = m.id and p.name_id = %s)
+union
+select m.title, m.start_year, Null as played, c.role
+from movies m
+join crew_roles c on (c.movie_id = m.id and c.name_id = %s)
+join principals p on (p.movie_id = m.id and p.name_id = %s)
+order by start_year, title, played, role
+"""
+# no need for views or plpgsql functions imo
 
 # process command-line args
 
@@ -40,40 +59,29 @@ if (argc == 3):
 try:
   db = psycopg2.connect("dbname=imdb")
   cursor = db.cursor()
-  get_people = """
-  select * 
-  from names
-  where name ~* %s
-  """
+
+  # setup args and pattern depending on cmdline args given, then query
   args = [name_regex]
   full_pattern = f"'{name_regex}'"
-  if (year is not None):
+  if (year is not None): # add year to where portion of the query
     get_people = get_people + """
     and birth_year = %s
     """
     args.append(year)
     full_pattern = full_pattern + f" {year}"
+  # add the ordering now that year has potentially been added
   get_people = get_people + """
   order by name, birth_year, id
   """
   cursor.execute(get_people, args)
+
+  # handle results
   if (cursor.rowcount == 0):
     print(f"No name matching {full_pattern}")
-  elif (cursor.rowcount == 1):
+
+  elif (cursor.rowcount == 1): # found the specific person, so do bio
     name_id, name, birth, death = cursor.fetchone()
-    print(f"Filmography for {name}{lifespan(birth, death)}\n===============")
-    get_filmography = """
-    select m.title, m.start_year, a.played, Null as role
-    from movies m
-    join acting_roles a on (a.movie_id = m.id and a.name_id = %s)
-    join principals p on (p.movie_id = m.id and p.name_id = %s)
-    union
-    select m.title, m.start_year, Null as played, c.role
-    from movies m
-    join crew_roles c on (c.movie_id = m.id and c.name_id = %s)
-    join principals p on (p.movie_id = m.id and p.name_id = %s)
-    order by start_year, title, played, role
-    """
+    header(f"Filmography for {name}{lifespan(birth, death)}")
     cursor.execute(get_filmography, [name_id]*4)
     curr_movie = None
     for row in cursor.fetchall():
@@ -84,14 +92,15 @@ try:
       if (played is not None):
         print(f" playing {played}")
       else:
-        print(f" as {str(role).capitalize().replace('_', ' ')}") # might need .strip?
-  else:
-    print(f"Names matching {full_pattern}\n===============")
+        print(f" as {str(role).capitalize().replace('_', ' ')}")
+
+  else: # found multiple matches for the name, print them all
+    header(f"Names matching {full_pattern}")
     for row in cursor.fetchall():
       id, name, birth, death = row
-      #print(f"id={id}, name={name}, birth={birth}, death={death}")
       name = name + lifespan(birth, death)
       print(f"{name}")
+
 except psycopg2.Error as err:
   print("DB error: ", err)
 finally:
