@@ -2,4 +2,4 @@
 # add here any functions to share between Python scripts 
 
 def header(text):
-  print(text, "===============")
+  print(text + "\n===============")
