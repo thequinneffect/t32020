@@ -1,16 +1,3 @@
-thu: ethics essay (draft)
-fri: ethics essay (final)
-sat: db assignment (mostly done)
-sun: prog chals (lecture revision and set 7 - max flow problems)
-mon: db assignment
-
-essay strategy:
-	- pick 1 specific argument
-	- collate all evidence and points for/against it
-	- form an ethical judgement
-	- write out basic ideas in dot points
-	- repeat for other arguments
-
-	- also go back over ethics lectures
-	- also go back over piazza post detailing what to do and what not to do in the essay
-	- remember ETHICS ETHICS ETHICS
+03/12 : db exam
+09/12 : prog chals exam
+10/12 : problem set 7 and 8 due
