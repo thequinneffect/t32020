@@ -1,0 +1,14 @@
+    performer    | ninstruments 
+-----------------+--------------
+ Danny Jones     |            9
+ Sam Strummer    |            9
+ Bernie Jaeger   |            7
+ Bobby Storm     |            7
+ Dave Jones      |            7
+ Eric Page       |            7
+ Mick Smith      |            7
+ Ozzy Wheeler    |            7
+ Robert Smith    |            7
+ Robert Storm    |            7
+ Weasel Osbourne |            7
+(11 rows)

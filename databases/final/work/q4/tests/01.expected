@@ -1,0 +1,53 @@
+        group         | nshort | nlong 
+----------------------+--------+-------
+ After the Sea        |      4 |    14
+ After the Sky        |      0 |     0
+ All of the Floyd     |      3 |     5
+ All of the Sea       |      2 |    15
+ Black Eyed Boy       |      4 |    26
+ Black Eyed Nails     |      6 |    30
+ Black Mountains      |      3 |     7
+ Black Vanilla        |      6 |    18
+ Blue Floyd           |     10 |    18
+ Blue Mountains       |      4 |    11
+ Bring me the Joe     |      6 |     5
+ Bring me the Sea     |      6 |    17
+ Crying Feelings      |      0 |     0
+ Crying Gang          |      2 |     4
+ Grand Floyd          |      5 |    18
+ Grand Forties        |      3 |    20
+ Grand Horde          |      1 |     9
+ Grand Ocean          |      4 |    16
+ Liquid Bricks        |     10 |    22
+ Massive Knights      |      4 |     7
+ Massive Mountains    |      9 |    26
+ Nine Inch Funk       |      0 |     8
+ Nine Inch Gang       |      1 |    20
+ Nine Inch Horde      |      6 |    33
+ Nine Inch Peas       |      0 |    13
+ Nine Inch Sea        |      2 |     7
+ Nine Inch Sky        |      1 |    16
+ Nine Inch Stones     |      3 |    12
+ Pink Oysters         |      2 |     9
+ Poor Funk            |      7 |    14
+ Poor Knights         |      1 |     4
+ Poor Oysters         |      2 |     6
+ Raging Horde         |      4 |    11
+ Raging Knights       |      2 |    10
+ Roaring Boy          |      1 |    28
+ Roaring Buffalo      |      3 |    21
+ Roaring Empire       |      1 |     4
+ Roaring Floyd        |      3 |     9
+ Roaring Funk         |      4 |    23
+ Roaring Gang         |      5 |    10
+ Roaring Sea          |      3 |     3
+ The Horde            |      6 |    17
+ Velvet Oysters       |      6 |    20
+ Velvet Sky           |      2 |     8
+ We lost the Bricks   |      5 |    20
+ We lost the Effect   |      6 |    29
+ We lost the Empire   |      2 |    12
+ We lost the Feelings |      1 |     7
+ We lost the Nails    |      1 |     8
+ We lost the Sky      |      1 |    13
+(50 rows)
