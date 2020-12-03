@@ -11,6 +11,26 @@ import psycopg2
 db = None
 cur = None
 usage = f"Usage: {sys.argv[0]} AlbumID"
+oldquery = """
+select a.title, a.year, a.genre, s.title, s.trackNo, p.name, po.instrument
+from albums a
+join songs s on (s.on_album = a.id)
+left outer join playson po on (po.song = s.id)
+left outer join performers p on (p.id = po.performer)
+where a.id = %s
+group by a.id, s.id, p.id, a.title, a.year, a.genre, s.title, s.trackNo, p.name, po.instrument
+order by s.trackNo, p.name, po.instrument;
+"""
+query = """
+select a.title, a.year, a.genre, s.title, s.trackNo, p.name, instrumentsOf(p.id, s.id)
+from albums a
+join songs s on (s.on_album = a.id)
+left outer join playson po on (po.song = s.id)
+left outer join performers p on (p.id = po.performer)
+where a.id = %s
+group by a.id, s.id, p.id, a.title, a.year, a.genre, s.title, s.trackNo, p.name
+order by s.trackNo, p.name, instrumentsOf;
+"""
 
 # process command-line args
 
@@ -24,14 +44,32 @@ if not albumID.isnumeric():
 
 try:
    db = psycopg2.connect("dbname=music")
-
-   # ... your code goes here ...
-
+   cursor = db.cursor()
+   cursor.execute(query, [albumID])
+   if (cursor.rowcount == 0):
+      print("Invalid album ID")
+   else:
+      doneTitle = False
+      currSong = None
+      for row in cursor.fetchall():
+         aTitle, aYear, aGenre, sTitle, sTrackNo, pName, instruments = row
+         if (not doneTitle):
+            print(f"{aTitle} ({aYear}) ({aGenre})") 
+            print(40*'=')
+            doneTitle = True
+         if (currSong != sTitle):
+            print("%2d. %s" % (sTrackNo, sTitle))
+            currSong = sTitle
+         if (pName == None):
+            pName = 'The whole group'
+            print("%8s%s" % (' ', pName))
+         else:
+            print("%8s%s: %s" % (' ', pName, instruments))
 except psycopg2.Error as err:
    print("DB error: ", err)
 finally:
    if cur:
-       cur.close()
+      cur.close()
    if db:
       db.close()
 
