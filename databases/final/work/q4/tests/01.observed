@@ -1,0 +1,3 @@
+ERROR:  collation "en_AU" for encoding "UTF8" does not exist
+LINE 1: select * from q4() order by "group" collate "en_AU";
+                                            ^
