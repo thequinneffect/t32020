@@ -10,6 +10,15 @@ import psycopg2
 db = None
 cur = None
 usage = f"Usage: {sys.argv[0]} GroupID"
+query = """
+select g.name, a.title, a.year, a.genre, s.trackNo, s.title, s.length
+from groups g
+join albums a on (a.made_by = g.id)
+join songs s on (s.on_album = a.id)
+where g.id = %s
+group by g.id, a.title, a.year, a.genre, s.trackNo, s.title, s.length
+order by a.year, a.title, s.trackNo
+"""
 
 # process command-line args
 
@@ -23,14 +32,29 @@ if not groupID.isnumeric():
 
 try:
    db = psycopg2.connect("dbname=music")
-
-   # ... your code goes here ...
-
+   cursor = db.cursor()
+   cursor.execute(query, [groupID])
+   if (cursor.rowcount == 0):
+      print(f"Group with id={groupID} has no data")
+   else:
+      doneTitle = False
+      currTitle = None
+      for row in cursor.fetchall():
+         gName, aTitle, aYear, aGenre, sTrackNo, sTitle, sLen = row
+         if (not doneTitle):
+            print(f"Discography for {gName}")
+            doneTitle = True
+         if (aTitle != currTitle):
+            currTitle = aTitle
+            print(20 * '-')
+            print(f"{aTitle} ({aYear}) ({aGenre})")
+            print(20 * '-')
+         print("%2d. %s (%d:%02d)" % (sTrackNo, sTitle, sLen // 60, sLen % 60))
 except psycopg2.Error as err:
    print("DB error: ", err)
 finally:
    if cur:
-       cur.close()
+      cur.close()
    if db:
       db.close()
 
