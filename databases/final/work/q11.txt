@@ -2,17 +2,18 @@
 
 (a)
 
-
+Res(a,b,c) = Sel[true](R)
 
 (b)
 
-
+Res(a,b) = Sel[c < 0](R)
 
 (c)
 
-
+Tmp(a) = Sel[c < 0](R)
+Res(a, d) = Tmp Join[b = e] S
 
 (d)
 
-
-
+Tmp(b,c,d,f) = R Join T
+Res(b,c,e,f) = Tmp Join S
