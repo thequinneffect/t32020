@@ -1,10 +1,32 @@
 # COMP3311 20T3 Final Exam Q12
 
 (a)
-
+It is not conflict serializable.
+T2 -> T1
+T1 -> T2
+T1 -> T3
+T2 -> T3
+the first two form a cycle and hence not conflict serializable.
 
 (b)
 
+If possible, then it must be like one of the 3! = 6 options;
+1: T1 T2 T3
+2: T1 T3 T2 
+3: T2 T1 T3 
+4: T2 T3 T1 
+5: T3 T1 T2 
+6: T3 T2 T1
 
-(c)
+In concurrent schedule;
+X: there are no reads for x, T3 writes final
+Y: T2 reads inital, T1 writes final (and note T2 doesn't read T1's write)
 
+As they all write X and T3 must write X final, 
+it can only be option 1 or 3 (these have T3 writing final).
+T2 must read Y first and note that in the concurrent version
+it reads Y before T1 writes to it, and because the serializable
+schedule must read the same version of a shared object, T2 must
+read Y before T1 writes to it, meaning only option 3 is valid.
+
+It is view serializable when the ordering is T2 T1 T3
