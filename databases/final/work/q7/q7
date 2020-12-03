@@ -11,16 +11,6 @@ import psycopg2
 db = None
 cur = None
 usage = f"Usage: {sys.argv[0]} AlbumID"
-oldquery = """
-select a.title, a.year, a.genre, s.title, s.trackNo, p.name, po.instrument
-from albums a
-join songs s on (s.on_album = a.id)
-left outer join playson po on (po.song = s.id)
-left outer join performers p on (p.id = po.performer)
-where a.id = %s
-group by a.id, s.id, p.id, a.title, a.year, a.genre, s.title, s.trackNo, p.name, po.instrument
-order by s.trackNo, p.name, po.instrument;
-"""
 query = """
 select a.title, a.year, a.genre, s.title, s.trackNo, p.name, instrumentsOf(p.id, s.id)
 from albums a
