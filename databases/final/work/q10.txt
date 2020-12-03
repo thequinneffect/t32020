@@ -2,7 +2,41 @@
 
 (a)
 
+fid -> from, to, distance, departs, arrives, price
+from, to -> distance
+aid -> aname, range
+eid -> ename, salary
+employee, aircraft -> employee, aircraft
 
 (b)
+Assumptions:
+I've assumed that aircraft with a different aid could potentially have 
+the same name i.e. multiple "747 Airbus"'s.
+I've also assumed that people with the same id can have the same name
+which seems pretty obvious.
 
+from, to -> distance violates BCNF because it is not trivial
+as distance does not appear on the LHS, nor is "from, to" a superkey
+(it doesn't imply departs, arrives, or price).
+The rest are superkeys so are okay.
 
+A new schema possibility is;
+
+Routes(rid, from, to, distance)
+Flights(fid, route, departs, arrives, price)
+Aircraft(aid, aname, range)
+Certified(employee, aircraft)
+Employees(eid, ename, salary)
+
+which gives FD's;
+
+rid -> from, to, distance
+from, to -> distance
+fid -> route, departs, arrives, price
+aid -> aname, range
+eid -> ename, salary
+employee, aircraft -> employee, aircraft
+
+and now it is in BCNF as rid is a super key, as is "from, to" because 
+it doesn't need to imply departs, arrives, or price anymore,
+and it does imply distance as required.
