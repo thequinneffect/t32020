@@ -1,14 +1,86 @@
-# COMP3311 20T3 Final Exam Q8
+--# COMP3311 20T3 Final Exam Q8
 
-(a)
+--(a)
 
+create table U (
+    id          serial,
+    a           integer not null,
+    b           text not null,
+    primary key (id)
+);
 
+-- since m is an MVA, we would likely create another table like below
+create table MforU (
+    m           text,
+    u_id        integer,
+    primary key (m, u_id),
+    foreign key (u_id) references U(id)
+);
 
-(b)
+--(b)
 
+create table S (
+    id          serial,
+    t_id        integer not null, -- total participation, 1:1
+    primary key (id)
+    --foreign key (t_id) references T(id)
+);
 
+create table T (
+    id          serial,
+    c           text not null, 
+    s_id        integer, -- not total participation, 1:1
+    primary key (id)
+    --foreign key (s_id) references S(id)
+);
 
-(c)
+-- you need to add the foreign keys as alterations because they have
+-- a cyclic dependency. I've added them in above commented out because
+-- the question stated we should use a collection of create table statements
+alter table S
+add constraint s_t_id_fkey
+foreign key (t_id) references T(id);
 
+alter table T 
+add constraint t_s_id_fkey
+foreign key (s_id) references S(id);
+
+--(c)
+
+create table P (
+    id          serial,
+    e           text not null,
+    primary key (id)
+);
+
+/* For the following subclasses of the P table, there is no way to
+ * capture the disjoint or total participations aspects of the ER 
+ * diagram. The disjointed-ness is broken because there is currently 
+ * nothing to stop us from having an instance of Q1 and Q2 point back
+ * to the same instance of P (i.e. they have the same p_id). The 
+ * total participation is broken because we can add a P without adding
+ * a corresponding entry into one of the subclass tables (i.e. we end
+ * up with a P.id that isn't references as a foreign key in any of
+ * the subclasses). These contraints require a programmed solution.
+ *  */
+create table Q1 (
+    p_id        integer,
+    f           integer not null,
+    primary key (p_id),
+    foreign key (p_id) references P(id)
+);
+
+create table Q2 (
+    p_id        integer,
+    primary key (p_id),
+    foreign key (p_id) references P(id)
+);
+
+create table Q3 (
+    p_id        integer,
+    g           integer not null,
+    primary key (p_id),
+    foreign key (p_id) references P(id)
+);
 
 
