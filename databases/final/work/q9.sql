@@ -1,10 +1,4 @@
-# COMP3311 20T3 Final Exam Q9
-
-(a)
-create trigger checkDisbanded
-after delete on memberof
-execute procedure checkDisbanded();
-
+/*
 create or replace function
     checkDisbanded() returns trigger
 as $$
@@ -25,13 +19,7 @@ begin
 end;
 $$ language plpgsql
 ;
-
-(b)
-
-Assumptions:
-we can do "after update on R.x" where x is a specific column as per the spec 
-newGroupId() is a plpgsql function that gives a new unique id.
-
+*/
 create trigger onNameChange
 before update on groups.name 
 execute procedure onNameChange();
@@ -69,4 +57,3 @@ begin
 end;
 $$ language plpgsql
 ;
-
