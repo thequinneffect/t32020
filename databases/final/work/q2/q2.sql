@@ -5,6 +5,9 @@
 
 create or replace view q2("group")
 as
-...put your SQL here...
+select g.name
+from groups g
+left join albums a on (a.made_by = g.id)
+where a.title is null
 ;
 
