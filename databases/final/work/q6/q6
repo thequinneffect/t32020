@@ -35,7 +35,7 @@ try:
    cursor = db.cursor()
    cursor.execute(query, [groupID])
    if (cursor.rowcount == 0):
-      print(f"Group with id={groupID} has no data")
+      print("Invalid group ID")
    else:
       doneTitle = False
       currTitle = None
