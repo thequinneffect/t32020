@@ -23,19 +23,21 @@ void add_edge(pii e, int c) {
     if (is_valid(e) && !seen[e.first][e.second]) pq.push({c + maze[e.first][e.second], e});
 }
 
+void reset() {
+    for (int u=0; u < r; u++) for (int v=0; v < c; v++) {
+        seen[u][v] = maze[u][v] = dist[u][v] = 0;
+    }
+}
+
 int main() {
 
     cin >> n;
     for (int i=0; i < n; i++) {
+        reset();
         cin >> r >> c;
         for (int j=0; j < r; j++) for (int k=0; k < c; k++) cin >> maze[j][k];
 
-        if (r == 1 && c == 1) {
-            printf("0\n");
-            continue;
-        }
-
-        pq.push({0, {0, 0}}); // cost, {r, c}
+        pq.push({maze[0][0], {0, 0}}); // cost, {r, c}
         while (!pq.empty()) {
 
             edge e = pq.top();
@@ -56,7 +58,6 @@ int main() {
             add_edge(right, e_cost);
         }
         printf("%d\n", dist[r-1][c-1]);
-        for (int u=0; u < r; u++) for (int v=0; v < c; v++) seen[u][v] = 0;
     }
 
 }
