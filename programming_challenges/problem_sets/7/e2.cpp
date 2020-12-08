@@ -4,7 +4,7 @@
 #include <queue>
 
 #define MAXV 800+5
-#define MAXE 10000+5
+#define MAXE 2*(10000+5)
 
 using namespace std;
 typedef long long ll;
@@ -46,7 +46,7 @@ void bfs(ll u, set<ll>& sub, bool is_reverse) {
     q.push(u);
     while (!q.empty()) {
         ll u = q.front(); q.pop();
-        if (seen[u]) return;
+        if (seen[u]) continue;
         seen[u] = 1;
         sub.insert(u);
         for (ll e = start[u]; ~e; e = succ[e]) {
