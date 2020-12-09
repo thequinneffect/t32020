@@ -1,0 +1,21 @@
+strat {
+    - read all problems once over (add tags like dsu, graph, max-flow etc)
+    - then start on easiest, re-read it, fully understand it, and do sample input and output
+
+    a - dont understand it
+    b - okay
+    c - okay
+    d - graph but floating point numbers?
+    e - possible binary search
+    f - tree and key problem
+    g - another graph
+    h - probs the hard one?
+}
+
+a {
+
+}
+
+b {
+
+}
