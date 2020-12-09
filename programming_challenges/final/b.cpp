@@ -3,13 +3,12 @@
 #include <stack>
 
 #define MAXN 200000
-#define debug 0
 
 using namespace std;
 typedef long long ll;
 
 ll n;
-ll nums[MAXN], seen[2*MAXN];
+ll nums[MAXN], seen[MAXN + 5];
 stack<ll> wires;
 
 int main() {
@@ -18,14 +17,6 @@ int main() {
     for (int i=0; i < 4*n; i++) {
         cin >> nums[i];
     }
-    if (debug) {
-        for (int i=0; i < 4*n; i++) {
-            printf("%lld ", nums[i]);
-        }
-        printf("\n");
-    }
-    // solve
-    bool possible = true;
     for (int i=0; i < 4*n; i++) {
         if (!seen[nums[i]]) {
             wires.push(nums[i]);
@@ -34,11 +25,10 @@ int main() {
             if (wires.top() == nums[i]) {
                 wires.pop();
             } else {
-                possible = false;
-                break;
+                printf("NO\n");
+                return 0;
             }
         }
     }
-    if (possible) printf("YES\n");
-    else printf("NO\n");
+    printf("YES\n");
 }
