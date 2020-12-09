@@ -8,7 +8,8 @@ using namespace std;
 typedef long long ll;
 
 ll n;
-ll nums[MAXN], seen[MAXN + 5];
+ll nums[MAXN];
+int seen[MAXN + 5];
 stack<ll> wires;
 
 int main() {
