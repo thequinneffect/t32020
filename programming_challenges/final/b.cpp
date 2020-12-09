@@ -2,7 +2,7 @@
 #include <cstdio>
 #include <stack>
 
-#define MAXN (100000 + 5)
+#define MAXN 200000
 #define debug 0
 
 using namespace std;
