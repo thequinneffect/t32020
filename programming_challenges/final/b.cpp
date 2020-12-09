@@ -2,14 +2,14 @@
 #include <cstdio>
 #include <stack>
 
-#define MAXN 200000
+#define MAXN 100000+5
 
 using namespace std;
 typedef long long ll;
 
 ll n;
-ll nums[MAXN];
-int seen[MAXN + 5];
+ll nums[4*MAXN];
+int seen[2*MAXN];
 stack<ll> wires;
 
 int main() {

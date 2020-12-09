@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstdio>
 #include <vector>
+#include <cmath>
 
 #define debug 0
 #define mod 1000000007
@@ -52,7 +53,11 @@ int main() {
     for (int i=0; i < n; i++) {
         res = mul(res);
     }
-    for (int i : res) {
+    vector<ll> res2 = k;
+    for (int i=0; i < n; i++) {
+        res2[i] = (k[i] * (ll)pow(rhs[i], n)) % mod;
+    }
+    for (int i : res2) {
         printf("%d ", i);
     }
     printf("\n");
