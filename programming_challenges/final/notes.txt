@@ -9,7 +9,7 @@ strat {
     e - possible binary search
     f - tree and key problem
     g - another graph
-    h - probs the hard one?
+    h - range tree
 }
 
 a {
