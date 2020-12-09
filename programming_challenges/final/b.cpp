@@ -10,6 +10,7 @@ typedef long long ll;
 
 ll n;
 ll nums[MAXN], seen[2*MAXN];
+stack<ll> wires;
 
 int main() {
 
@@ -24,7 +25,6 @@ int main() {
         printf("\n");
     }
     // solve
-    stack<ll> wires;
     bool possible = true;
     for (int i=0; i < 4*n; i++) {
         if (!seen[nums[i]]) {
