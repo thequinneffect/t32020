@@ -9,7 +9,7 @@ using namespace std;
 typedef long long ll;
 
 ll n;
-ll nums[MAXN], seen[MAXN];
+ll nums[MAXN], seen[2*MAXN];
 
 int main() {
 
