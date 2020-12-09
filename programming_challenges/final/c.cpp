@@ -31,21 +31,27 @@ void merge(int x, int y) {
     x = getRoot(x);
     y = getRoot(y);
     if (x == y) return;
-    int winner = -1;
+    int winner = -1, loser = -1;
     if (sz[x] < sz[y]) {
         root[x] = y;
         winner = y;
+        loser = x;
     } else if (sz[x] > sz[y]) {
         root[y] = x;
         winner = x;
+        loser = y;
     } else {
         root[y] = x;
         sz[x]++;
         winner = x;
+        loser = y;
     }
     // if they were part cities, insert them to the sets
     if (seen[sx]) sets[winner].insert(sx);
     if (seen[sy]) sets[winner].insert(sy);
+    for (ll c : sets[loser]) {
+        sets[winner].insert(c);
+    }
     // now check if either of the sets contains all part cities
     if (sets[winner].size() == p) done = true;
 }
