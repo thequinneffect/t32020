@@ -2,6 +2,7 @@
 #include <cstdio>
 #include <map>
 #include <vector>
+#include <set>
 
 #define MAXN 100000+5
 #define debug 0
@@ -14,6 +15,7 @@ typedef pair<int, int> pii;
 int n,m,p, max_level = 0, nsubsets = 0;
 map<int, vector<pii>> e;
 int loc[MAXN], seen[MAXN];
+map<int, set<int>> sets;
 
 int root[MAXN];
 int sz[MAXN];
@@ -24,6 +26,7 @@ int getRoot(int i) {
 }
 void merge(int x, int y) {
     // if x and y are part cities
+    int sx = x, sy = y;
     bool useful_subset = false;
     if (seen[x] && seen[y]) useful_subset = true;
     x = getRoot(x);
@@ -31,12 +34,18 @@ void merge(int x, int y) {
     if (x == y) return;
     if (useful_subset) nsubsets--;
     if (useful_subset && debug) printf("nsubsets changed from %d to %d\n", nsubsets+1, nsubsets);
-    if (sz[x] < sz[y]) root[x] = y;
-    else if (sz[x] > sz[y]) root[y] = x;
-    else {
+    if (sz[x] < sz[y]) {
+        root[x] = y;
+        sets[y].insert(x);
+    } else if (sz[x] > sz[y]) {
+        root[y] = x;
+        sets[x].insert(y);
+    } else {
         root[y] = x;
         sz[x]++;
+        sets[x].insert(y);
     }
+    // possibly just insert to both?
 }
 
 
@@ -73,6 +82,9 @@ int main() {
     }
     p = unique_locs;
     nsubsets = p;
+    for (int i=0; i < p; i++) {
+        sets[loc[i]].insert(loc[i]);
+    }
 
     if (debug) {
         printf("locs are;\n");

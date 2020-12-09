@@ -2,7 +2,7 @@
 #include <cstdio>
 #include <vector>
 
-#define debug 1
+#define debug 0
 #define mod 1000000007
 
 using namespace std;
@@ -34,9 +34,9 @@ vector<ll> combine(vector<ll> a, vector<ll> b) {
     return mul(a, rot(b));
 }
 
-vector<ll> solve(int n, vector<ll> k) {
+vector<ll> combine_n(vector<ll> k, int n) {
     if (n==0) return k;
-    solve(n-1, solve(n-1, k));
+    return combine(combine_n(k, n-1), k);
 }
 
 int main() {
@@ -53,6 +53,9 @@ int main() {
         }
         printf("\n");
     }
-
-
+    auto res = combine_n(k, n);
+    for (int i : res) {
+        printf("%d ", i);
+    }
+    printf("\n");
 }
