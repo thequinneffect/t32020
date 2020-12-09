@@ -12,10 +12,11 @@ typedef long long ll;
 typedef pair<int, int> pii;
 
 
-int n,m,p, max_level = 0, nsubsets = 0;
+int n,m,p, max_level = 0;
 map<int, vector<pii>> e;
 int loc[MAXN], seen[MAXN];
 map<int, set<int>> sets;
+bool done = false;
 
 int root[MAXN];
 int sz[MAXN];
@@ -27,34 +28,32 @@ int getRoot(int i) {
 void merge(int x, int y) {
     // if x and y are part cities
     int sx = x, sy = y;
-    bool useful_subset = false;
-    if (seen[x] && seen[y]) useful_subset = true;
     x = getRoot(x);
     y = getRoot(y);
     if (x == y) return;
-    if (useful_subset) nsubsets--;
-    if (useful_subset && debug) printf("nsubsets changed from %d to %d\n", nsubsets+1, nsubsets);
+    int winner = -1;
     if (sz[x] < sz[y]) {
         root[x] = y;
-        sets[y].insert(x);
+        winner = y;
     } else if (sz[x] > sz[y]) {
         root[y] = x;
-        sets[x].insert(y);
+        winner = x;
     } else {
         root[y] = x;
         sz[x]++;
-        sets[x].insert(y);
+        winner = x;
     }
-    // possibly just insert to both?
+    // if they were part cities, insert them to the sets
+    if (seen[sx]) sets[winner].insert(sx);
+    if (seen[sy]) sets[winner].insert(sy);
+    // now check if either of the sets contains all part cities
+    if (sets[winner].size() == p) done = true;
 }
 
 
 bool check() {
-    if (debug) printf("running check! nsubsets currently is %d\n", nsubsets);
     int first = getRoot(loc[0]);
-    if (debug) printf("first is %d\n", first);
     for (int i=1; i < p; i++) {
-        if (debug) printf("getRoot(%d) is %d\n", i, getRoot(i));
         if (getRoot(loc[i]) != first) return false;
     }
     return true;
@@ -81,7 +80,6 @@ int main() {
         }
     }
     p = unique_locs;
-    nsubsets = p;
     for (int i=0; i < p; i++) {
         sets[loc[i]].insert(loc[i]);
     }
@@ -98,7 +96,7 @@ int main() {
         root[i] = i;
     }
     // see if it can be done without any
-    if (check()) {
+    if (p == 1) {
         printf("0\n");
         return 0;
     }
@@ -109,7 +107,7 @@ int main() {
         for (auto edge : e[i]) {
             merge(edge.first, edge.second);
         }
-        if (check()) {
+        if (done) {
             printf("%d\n", i);
             return 0;
         }
