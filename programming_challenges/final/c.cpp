@@ -4,11 +4,16 @@
 #include <vector>
 
 #define MAXN 100000+5
-#define debug 0
+#define debug 1
 
 using namespace std;
 typedef long long ll;
 typedef pair<int, int> pii;
+
+
+int n,m,p, max_level = 0, nsubsets = 0;
+map<int, vector<pii>> e;
+int loc[MAXN], seen[MAXN];
 
 int root[MAXN];
 int sz[MAXN];
@@ -18,9 +23,14 @@ int getRoot(int i) {
     return root[i];
 }
 void merge(int x, int y) {
+    // if x and y are part cities
+    bool useful_subset = false;
+    if (seen[x] && seen[y]) useful_subset = true;
     x = getRoot(x);
     y = getRoot(y);
     if (x == y) return;
+    if (useful_subset) nsubsets--;
+    if (useful_subset && debug) printf("nsubsets changed from %d to %d\n", nsubsets+1, nsubsets);
     if (sz[x] < sz[y]) root[x] = y;
     else if (sz[x] > sz[y]) root[y] = x;
     else {
@@ -29,12 +39,9 @@ void merge(int x, int y) {
     }
 }
 
-int n,m,p, max_level = 0;
-map<int, vector<pii>> e;
-int loc[MAXN];
 
 bool check() {
-    if (debug) printf("running check!\n");
+    if (debug) printf("running check! nsubsets currently is %d\n", nsubsets);
     int first = getRoot(loc[0]);
     if (debug) printf("first is %d\n", first);
     for (int i=1; i < p; i++) {
@@ -54,9 +61,18 @@ int main() {
         e[c].push_back({a,b});
         if (c > max_level) max_level = c;
     }
-    for (int i=0; i < p; i++) {
-        cin >> loc[i];
+    int unique_locs = 0;
+    for (int i=0, j=0; i < p; i++) {
+        int c;
+        cin >> c;
+        if (!seen[c]) {
+            loc[j] = c;
+            j++, unique_locs++;
+            seen[c] = 1;
+        }
     }
+    p = unique_locs;
+    nsubsets = p;
 
     if (debug) {
         printf("locs are;\n");
@@ -81,8 +97,6 @@ int main() {
         for (auto edge : e[i]) {
             merge(edge.first, edge.second);
         }
-
-        // now see if done
         if (check()) {
             printf("%d\n", i);
             return 0;
