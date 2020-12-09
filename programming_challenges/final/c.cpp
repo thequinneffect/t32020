@@ -4,7 +4,7 @@
 #include <vector>
 
 #define MAXN 100000+5
-#define debug 1
+#define debug 0
 
 using namespace std;
 typedef long long ll;
